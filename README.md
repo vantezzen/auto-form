@@ -440,12 +440,12 @@ The preferred way is to use the `onSubmit` prop. This will be called when the fo
 
 #### Controlled form
 
-You can also use the `values` and `setValues` props to control the form data yourself.
+You can also use the `values` and `onValuesChange` props to control the form data yourself.
 
 ```tsx
 const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>({});
 
-<AutoForm values={values} setValues={setValues} />;
+<AutoForm values={values} onValuesChange={setValues} />;
 ```
 
 Please note that the data is not validated or coerced when using this method as they update immediately.
