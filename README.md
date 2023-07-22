@@ -103,6 +103,13 @@ const formSchema = z.object({
 
   // Enum will show a select
   color: z.enum(["red", "green", "blue"]),
+
+  // Create sub-objects to create accordion sections
+  address: z.object({
+    street: z.string(),
+    city: z.string(),
+    zip: z.string(),
+  }),
 });
 
 function App() {
@@ -232,6 +239,45 @@ You can set a default value for a field using the `default` method.
 ```tsx
 const formSchema = z.object({
   favouriteNumber: z.number().default(5),
+});
+```
+
+#### Sub-objects
+
+You can nest objects to create accordion sections.
+
+```tsx
+const formSchema = z.object({
+  address: z.object({
+    street: z.string(),
+    city: z.string(),
+    zip: z.string(),
+
+    // You can nest objects as deep as you want
+    nested: z.object({
+      foo: z.string(),
+      bar: z.string(),
+
+      nested: z.object({
+        foo: z.string(),
+        bar: z.string(),
+      }),
+    }),
+  }),
+});
+```
+
+Like with normal objects, you can use the `describe` method to set a label and description for the section:
+
+```tsx
+const formSchema = z.object({
+  address: z
+    .object({
+      street: z.string(),
+      city: z.string(),
+      zip: z.string(),
+    })
+    .describe("Your address"),
 });
 ```
 

@@ -31,6 +31,12 @@ import { DatePicker } from "./date-picker";
 import { cn } from "@/lib/utils";
 import { Switch } from "./switch";
 import { Textarea } from "./textarea";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./accordion";
 
 /**
  * Beautify a camelCase string.
@@ -93,9 +99,20 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 
   for (const key of Object.keys(shape)) {
     const item = shape[key] as z.ZodAny;
-    const defaultValue = getDefaultValueInZodStack(item);
-    if (defaultValue !== undefined) {
-      defaultValues[key as keyof DefaultValuesType] = defaultValue;
+
+    if (getBaseType(item) === "ZodObject") {
+      const defaultItems = getDefaultValues(
+        item as unknown as z.ZodObject<any, any>
+      );
+      for (const defaultItemKey of Object.keys(defaultItems)) {
+        const pathKey = `${key}.${defaultItemKey}` as keyof DefaultValuesType;
+        defaultValues[pathKey] = defaultItems[defaultItemKey];
+      }
+    } else {
+      const defaultValue = getDefaultValueInZodStack(item);
+      if (defaultValue !== undefined) {
+        defaultValues[key as keyof DefaultValuesType] = defaultValue;
+      }
     }
   }
 
@@ -164,7 +181,10 @@ export type FieldConfigItem = {
 };
 
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
-  [key in keyof SchemaType]?: FieldConfigItem;
+  // If SchemaType.key is an object, create a nested FieldConfig, otherwise FieldConfigItem
+  [Key in keyof SchemaType]?: SchemaType[Key] extends object
+    ? FieldConfig<z.infer<SchemaType[Key]>>
+    : FieldConfigItem;
 };
 
 /**
@@ -372,34 +392,63 @@ const DEFAULT_ZOD_HANDLERS: {
   ZodEnum: "select",
 };
 
+function DefaultParent({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
+
 function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
   schema,
   form,
   fieldConfig,
+  path = [],
 }: {
   schema: SchemaType;
   form: ReturnType<typeof useForm>;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+  path?: string[];
 }) {
   const { shape } = schema;
 
   return (
-    <>
+    <Accordion type="multiple" className="space-y-5">
       {Object.keys(shape).map((name) => {
         const item = shape[name] as z.ZodAny;
-        const fieldConfigItem = fieldConfig?.[name] ?? {};
+        const zodBaseType = getBaseType(item);
+        const itemName = item._def.description ?? beautifyObjectName(name);
+        const key = `${path.join(".")}.${name}`;
+
+        if (zodBaseType === "ZodObject") {
+          return (
+            <AccordionItem value={name} key={key}>
+              <AccordionTrigger>{itemName}</AccordionTrigger>
+              <AccordionContent className="p-2">
+                <AutoFormObject
+                  schema={item as unknown as z.ZodObject<any, any>}
+                  form={form}
+                  fieldConfig={
+                    (fieldConfig?.[name] ?? {}) as FieldConfig<
+                      z.infer<typeof item>
+                    >
+                  }
+                  path={[...path, name]}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }
+
+        const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
         const zodInputProps = zodToHtmlInputProps(item);
         const isRequired =
           zodInputProps.required ??
           fieldConfigItem.inputProps?.required ??
           false;
-        const zodBaseType = getBaseType(item);
 
         return (
           <FormField
             control={form.control}
-            name={name}
-            key={name}
+            name={key}
+            key={key}
             render={({ field }) => {
               const inputType =
                 fieldConfigItem.fieldType ??
@@ -411,18 +460,15 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                   ? inputType
                   : INPUT_COMPONENTS[inputType];
               const ParentElement =
-                fieldConfigItem.renderParent ??
-                (({ children }: { children: React.ReactNode }) => (
-                  <>{children}</>
-                ));
+                fieldConfigItem.renderParent ?? DefaultParent;
 
               return (
-                <ParentElement key={name}>
+                <ParentElement key={`${key}.parent`}>
                   <InputComponent
                     zodInputProps={zodInputProps}
                     field={field}
                     fieldConfigItem={fieldConfigItem}
-                    label={item._def.description ?? beautifyObjectName(name)}
+                    label={itemName}
                     isRequired={isRequired}
                     zodItem={item}
                     fieldProps={{
@@ -437,7 +483,7 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
           />
         );
       })}
-    </>
+    </Accordion>
   );
 }
 
@@ -481,7 +527,9 @@ function AutoForm<SchemaType extends z.ZodObject<any, any>>({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          form.handleSubmit(onSubmit)(e);
+        }}
         onChange={() => {
           const values = form.getValues();
           const parsedValues = formSchema.safeParse(values);
