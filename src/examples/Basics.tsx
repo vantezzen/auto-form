@@ -54,6 +54,11 @@ const formSchema = z.object({
 
   color: z.enum(["red", "green", "blue"]),
 
+  // Another enum example
+  marshmallows: z
+    .enum(["not many", "a few", "a lot", "too many"])
+    .describe("How many marshmallows fit in your mouth?"),
+
   bio: z
     .string()
     .min(10, {
@@ -128,6 +133,10 @@ function Basics() {
 
                 bio: {
                   fieldType: "textarea",
+                },
+
+                marshmallows: {
+                  fieldType: "radio",
                 },
 
                 customParent: {

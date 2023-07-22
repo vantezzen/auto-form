@@ -40,9 +40,9 @@ Currently, these field types are supported out of the box:
 
 - boolean (checkbox, switch)
 - date (date picker)
-- enum (select)
+- enum (select, radio group)
 - number (input)
-- string (input)
+- string (input, textfield)
 
 You can add support for other field types by adding them to the `INPUT_COMPONENTS` object in `auto-form.tsx`.
 
@@ -339,6 +339,7 @@ The complete list of supported field types is typed. Current supported types are
 - "switch"
 - "date" (default for dates)
 - "select" (default for enums)
+- "radio"
 - "textarea"
 - "fallback" (default for everything else, simple input field)
 
