@@ -10,6 +10,7 @@ A live demo can be found at <https://vantezzen.github.io/auto-form/>.
 
 The component depends on the following components from shadcn/ui:
 
+- accordion
 - button
 - calendar
 - card
@@ -21,7 +22,6 @@ The component depends on the following components from shadcn/ui:
 - radio-group
 - select
 - separator
-- slider
 - switch
 - textarea
 - toggle
@@ -29,7 +29,7 @@ The component depends on the following components from shadcn/ui:
 You can install them all at once with:
 
 ```bash
-npx shadcn-ui@latest add button calendar card checkbox form input label popover radio-group select separator slider switch textarea toggle
+npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea toggle
 ```
 
 To install the component itself, copy `auto-form.tsx` and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
