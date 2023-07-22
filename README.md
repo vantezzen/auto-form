@@ -2,6 +2,8 @@
 
 AutoForm is a React component that automatically creates a @shadcn/ui form based on a zod schema.
 
+A live demo can be found at <https://vantezzen.github.io/auto-form/>.
+
 ![AutoForm demo](./demo.png)
 
 ## Installation
