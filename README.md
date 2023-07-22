@@ -291,6 +291,7 @@ The complete list of supported field types is typed. Current supported types are
 - "switch"
 - "date" (default for dates)
 - "select" (default for enums)
+- "textarea"
 - "fallback" (default for everything else, simple input field)
 
 Alternatively, you can pass a React component to the `fieldType` property to use a custom component.
