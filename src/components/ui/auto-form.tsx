@@ -150,10 +150,24 @@ function zodToHtmlInputProps(
   return inputProps;
 }
 
+type HtmlTag = 
+  | 'div'
+  | 'fieldset'
+  | 'form'
+  | 'label'
+  | 'li'
+  | 'td';
+
 export type FieldConfigItem = {
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   fieldType?: keyof typeof INPUT_COMPONENTS;
+  parent?: {
+    tag: HtmlTag;
+    props: {
+      [key: string]: any;
+    }
+  };
 
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
@@ -378,9 +392,11 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                 DEFAULT_ZOD_HANDLERS[zodBaseType] ??
                 "fallback";
               const InputComponent = INPUT_COMPONENTS[inputType];
+              const ParentComponent = fieldConfigItem.parent ? fieldConfigItem.parent.tag : React.Fragment;
+              const parentProps = fieldConfigItem.parent?.props ?? {};
 
               return (
-                <React.Fragment key={name}>
+                <ParentComponent key={name} {...parentProps}>
                   {fieldConfigItem.startAdornment}
                   <InputComponent
                     zodInputProps={zodInputProps}
@@ -396,7 +412,7 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                     }}
                   />
                   {fieldConfigItem.endAdornment}
-                </React.Fragment>
+                </ParentComponent>
               );
             }}
           />
