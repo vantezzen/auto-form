@@ -54,6 +54,16 @@ const formSchema = z.object({
   birthday: z.coerce.date().optional(),
 
   color: z.enum(["red", "green", "blue"]),
+
+  bio: z
+    .string()
+    .min(10, {
+      message: "Bio must be at least 10 characters.",
+    })
+    .max(160, {
+      message: "Bio must not be longer than 30 characters.",
+    })
+    .optional(),
 });
 
 function App() {
@@ -121,6 +131,10 @@ function App() {
                 sendMeMails: {
                   fieldType: "switch",
                 },
+
+                bio: {
+                  fieldType: "textarea"
+                }
               }}
             >
               <AutoFormSubmit>Send now</AutoFormSubmit>

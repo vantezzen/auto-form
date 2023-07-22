@@ -30,6 +30,7 @@ import { Checkbox } from "./checkbox";
 import { DatePicker } from "./date-picker";
 import { cn } from "@/lib/utils";
 import { Switch } from "./switch";
+import { Textarea } from "./textarea";
 
 /**
  * Beautify a camelCase string.
@@ -199,6 +200,29 @@ function AutoFormInput({
   );
 }
 
+function AutoFormTextarea({
+  label,
+  isRequired,
+  fieldConfigItem,
+  fieldProps,
+}: AutoFormInputComponentProps) {
+  return (
+    <FormItem>
+      <FormLabel>
+        {label}
+        {isRequired && <span className="text-destructive"> *</span>}
+      </FormLabel>
+      <FormControl>
+        <Textarea {...fieldProps} />
+      </FormControl>
+      {fieldConfigItem.description && (
+        <FormDescription>{fieldConfigItem.description}</FormDescription>
+      )}
+      <FormMessage />
+    </FormItem>
+  );
+}
+
 function AutoFormCheckbox({
   label,
   isRequired,
@@ -329,6 +353,7 @@ const INPUT_COMPONENTS = {
   date: AutoFormDate,
   select: AutoFormEnum,
   switch: AutoFormSwitch,
+  textarea: AutoFormTextarea,
   fallback: AutoFormInput,
 };
 
