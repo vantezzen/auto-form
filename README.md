@@ -293,6 +293,43 @@ The complete list of supported field types is typed. Current supported types are
 - "select" (default for enums)
 - "fallback" (default for everything else, simple input field)
 
+Alternatively, you can pass a React component to the `fieldType` property to use a custom component.
+
+```tsx
+<AutoForm
+  fieldConfig={{
+    sendMeMails: {
+      fieldType: ({
+        label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+      }: AutoFormInputComponentProps) => (
+        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+          <FormControl>
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              {...fieldProps}
+            />
+          </FormControl>
+          <div className="space-y-1 leading-none">
+            <FormLabel>
+              {label}
+              {isRequired && <span className="text-destructive"> *</span>}
+            </FormLabel>
+            {fieldConfigItem.description && (
+              <FormDescription>{fieldConfigItem.description}</FormDescription>
+            )}
+          </div>
+        </FormItem>
+      ),
+    },
+  }}
+/>
+```
+
 #### Description
 
 You can use the `description` property to add a description below the field.
@@ -310,16 +347,22 @@ You can use the `description` property to add a description below the field.
 
 You can use JSX in the description.
 
-#### Adornments
+#### Custom parent component
 
-You can use the `startAdornment` and `endAdornment` properties to add an adornment to the input field.
+You can use the `renderParent` property to customize the parent element of the input to add adornments etc.
+By default, this is a React fragment.
 
 ```tsx
 <AutoForm
   fieldConfig={{
     username: {
-      startAdornment: <UserIcon />,
-      endAdornment: <Button>Check</Button>,
+      renderParent: ({ children }) => (
+        <>
+          <UserIcon />
+          {children} // The input component with label etc.
+          <Button onClick={...}>Check</Button>
+        </>
+      ),
     },
   }}
 />

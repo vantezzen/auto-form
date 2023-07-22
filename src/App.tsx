@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./components/ui/card";
+import { Button } from "./components/ui/button";
 
 const formSchema = z.object({
   username: z
@@ -64,6 +65,8 @@ const formSchema = z.object({
       message: "Bio must not be longer than 30 characters.",
     })
     .optional(),
+
+  customParent: z.string().optional(),
 });
 
 function App() {
@@ -133,8 +136,21 @@ function App() {
                 },
 
                 bio: {
-                  fieldType: "textarea"
-                }
+                  fieldType: "textarea",
+                },
+
+                customParent: {
+                  renderParent: ({ children }) => (
+                    <>
+                      <div className="flex items-end gap-3">
+                        <div className="flex-1">{children}</div>
+                        <div>
+                          <Button type="button">Check</Button>
+                        </div>
+                      </div>
+                    </>
+                  ),
+                },
               }}
             >
               <AutoFormSubmit>Send now</AutoFormSubmit>

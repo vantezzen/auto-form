@@ -154,10 +154,13 @@ function zodToHtmlInputProps(
 export type FieldConfigItem = {
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  fieldType?: keyof typeof INPUT_COMPONENTS;
+  fieldType?:
+    | keyof typeof INPUT_COMPONENTS
+    | React.FC<AutoFormInputComponentProps>;
 
-  startAdornment?: React.ReactNode;
-  endAdornment?: React.ReactNode;
+  renderParent?: (props: {
+    children: React.ReactNode;
+  }) => React.ReactElement | null | undefined;
 };
 
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
@@ -167,7 +170,7 @@ export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
 /**
  * A FormInput component can handle a specific Zod type (e.g. "ZodBoolean")
  */
-type AutoFormInputComponentProps = {
+export type AutoFormInputComponentProps = {
   zodInputProps: React.InputHTMLAttributes<HTMLInputElement>;
   field: ControllerRenderProps<FieldValues, any>;
   fieldConfigItem: FieldConfigItem;
@@ -402,11 +405,19 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                 fieldConfigItem.fieldType ??
                 DEFAULT_ZOD_HANDLERS[zodBaseType] ??
                 "fallback";
-              const InputComponent = INPUT_COMPONENTS[inputType];
+
+              const InputComponent =
+                typeof inputType === "function"
+                  ? inputType
+                  : INPUT_COMPONENTS[inputType];
+              const ParentElement =
+                fieldConfigItem.renderParent ??
+                (({ children }: { children: React.ReactNode }) => (
+                  <>{children}</>
+                ));
 
               return (
-                <React.Fragment key={name}>
-                  {fieldConfigItem.startAdornment}
+                <ParentElement key={name}>
                   <InputComponent
                     zodInputProps={zodInputProps}
                     field={field}
@@ -420,8 +431,7 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                       ...fieldConfigItem.inputProps,
                     }}
                   />
-                  {fieldConfigItem.endAdornment}
-                </React.Fragment>
+                </ParentElement>
               );
             }}
           />
