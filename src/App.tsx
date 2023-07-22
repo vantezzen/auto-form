@@ -141,14 +141,12 @@ function App() {
 
                 customParent: {
                   renderParent: ({ children }) => (
-                    <>
-                      <div className="flex items-end gap-3">
-                        <div className="flex-1">{children}</div>
-                        <div>
-                          <Button type="button">Check</Button>
-                        </div>
+                    <div className="flex items-end gap-3">
+                      <div className="flex-1">{children}</div>
+                      <div>
+                        <Button type="button">Check</Button>
                       </div>
-                    </>
+                    </div>
                   ),
                 },
               }}

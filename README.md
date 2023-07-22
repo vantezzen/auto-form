@@ -357,11 +357,14 @@ By default, this is a React fragment.
   fieldConfig={{
     username: {
       renderParent: ({ children }) => (
-        <>
-          <UserIcon />
-          {children} // The input component with label etc.
-          <Button onClick={...}>Check</Button>
-        </>
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            {children} // This is the input with label etc.
+          </div>
+          <div>
+            <Button type="button">Check</Button>
+          </div>
+        </div>
       ),
     },
   }}
