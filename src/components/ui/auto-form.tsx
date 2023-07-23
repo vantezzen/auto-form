@@ -328,7 +328,10 @@ function AutoFormRadioGroup({
           {...fieldProps}
         >
           {values.map((value: any) => (
-            <FormItem className="flex items-center space-x-3 space-y-0">
+            <FormItem
+              className="flex items-center space-x-3 space-y-0"
+              key={value}
+            >
               <FormControl>
                 <RadioGroupItem value={value} />
               </FormControl>
