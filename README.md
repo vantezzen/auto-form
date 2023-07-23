@@ -51,6 +51,7 @@ You can add support for other field types by adding them to the `INPUT_COMPONENT
 Basic usage:
 
 ```tsx
+"use client";
 import AutoForm, { AutoFormSubmit } from "./components/ui/auto-form";
 import * as z from "zod";
 
@@ -189,6 +190,28 @@ function App() {
       </p>
     </AutoForm>
   );
+}
+```
+
+### Next.js and RSC
+
+AutoForm can only be used inside a client-side React component due to serialization of the zod schema and values to your event listeners. If you want to use it in a Next.js app, simply mark your component with "use client":
+
+```tsx
+// MyPage.tsx
+export default function MyPage() {
+  return (
+    <div>
+      <MyForm />
+    </div>
+  );
+}
+
+// MyForm.tsx
+"use client";
+import AutoForm from "./components/ui/auto-form";
+export default function MyForm() {
+  return <AutoForm onSubmit={...} ... />;
 }
 ```
 
