@@ -120,6 +120,16 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
   return defaultValues;
 }
 
+function getObjectFormSchema(
+  schema: ZodObjectOrWrapped
+): z.ZodObject<any, any> {
+  if (schema._def.typeName === "ZodEffects") {
+    const typedSchema = schema as z.ZodEffects<z.ZodObject<any, any>>;
+    return getObjectFormSchema(typedSchema._def.schema);
+  }
+  return schema as z.ZodObject<any, any>;
+}
+
 /**
  * Convert a Zod schema to HTML input props to give direct feedback to the user.
  * Once submitted, the schema will be validated completely.
@@ -533,7 +543,12 @@ export function AutoFormSubmit({ children }: { children?: React.ReactNode }) {
   return <Button type="submit">{children ?? "Submit"}</Button>;
 }
 
-function AutoForm<SchemaType extends z.ZodObject<any, any>>({
+// TODO: This should support recursive ZodEffects but TypeScript doesn't allow circular type definitions.
+type ZodObjectOrWrapped =
+  | z.ZodObject<any, any>
+  | z.ZodEffects<z.ZodObject<any, any>>;
+
+function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formSchema,
   values: valuesProp,
   onValuesChange: onValuesChangeProp,
@@ -550,10 +565,11 @@ function AutoForm<SchemaType extends z.ZodObject<any, any>>({
   children?: React.ReactNode;
   className?: string;
 }) {
-  const defaultValues: DefaultValues<z.infer<typeof formSchema>> =
-    getDefaultValues(formSchema);
+  const objectFormSchema = getObjectFormSchema(formSchema);
+  const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> =
+    getDefaultValues(objectFormSchema);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof objectFormSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
     values: valuesProp,
@@ -582,7 +598,7 @@ function AutoForm<SchemaType extends z.ZodObject<any, any>>({
         className={cn("space-y-5", className)}
       >
         <AutoFormObject
-          schema={formSchema}
+          schema={objectFormSchema}
           form={form}
           fieldConfig={fieldConfig}
         />

@@ -1,4 +1,5 @@
 import Basics from "./examples/Basics";
+import ConfirmPassword from "./examples/ConfirmPassword";
 import Controlled from "./examples/Controlled";
 import SubObject from "./examples/SubObject";
 
@@ -9,6 +10,7 @@ function App() {
         <Basics />
         <SubObject />
         <Controlled />
+        <ConfirmPassword />
       </div>
     </>
   );
