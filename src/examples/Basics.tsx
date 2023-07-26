@@ -60,7 +60,7 @@ const formSchema = z.object({
 
   birthday: z.coerce.date().optional(),
 
-  color: z.enum(["red", "green", "blue"]),
+  color: z.enum(["red", "green", "blue"]).optional(),
 
   // Another enum example
   marshmallows: z
