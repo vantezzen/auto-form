@@ -1,5 +1,5 @@
 import * as z from "zod";
-import AutoForm, { AutoFormSubmit } from "../components/ui/auto-form";
+import AutoForm from "../components/ui/auto-form";
 import {
   Card,
   CardContent,
