@@ -1,3 +1,4 @@
+import Api from "./examples/Api";
 import Basics from "./examples/Basics";
 import ConfirmPassword from "./examples/ConfirmPassword";
 import Controlled from "./examples/Controlled";
@@ -11,6 +12,7 @@ function App() {
         <SubObject />
         <Controlled />
         <ConfirmPassword />
+        <Api />
       </div>
     </>
   );
