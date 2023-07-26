@@ -426,7 +426,9 @@ function AutoFormEnum({
       <FormControl>
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <SelectTrigger>
-            <SelectValue className="w-full">
+            <SelectValue 
+              className="w-full" 
+              placeholder={fieldConfigItem.inputProps?.placeholder}>
               {field.value ?? "Select an option"}
             </SelectValue>
           </SelectTrigger>
