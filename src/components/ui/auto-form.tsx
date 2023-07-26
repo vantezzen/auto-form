@@ -234,6 +234,33 @@ function AutoFormInput({
   );
 }
 
+function AutoFormNumberInput({
+  label,
+  isRequired,
+  fieldConfigItem,
+  fieldProps,
+}: AutoFormInputComponentProps) {
+  return (
+    <FormItem>
+      <FormLabel>
+        {label}
+        {isRequired && <span className="text-destructive"> *</span>}
+      </FormLabel>
+      <FormControl>
+        <Input
+          {...fieldProps}
+          type="number"
+          onChange={(e) => fieldProps.onChange(e.target.valueAsNumber)}
+        />
+      </FormControl>
+      {fieldConfigItem.description && (
+        <FormDescription>{fieldConfigItem.description}</FormDescription>
+      )}
+      <FormMessage />
+    </FormItem>
+  );
+}
+
 function AutoFormTextarea({
   label,
   isRequired,
@@ -429,6 +456,7 @@ const INPUT_COMPONENTS = {
   radio: AutoFormRadioGroup,
   switch: AutoFormSwitch,
   textarea: AutoFormTextarea,
+  number: AutoFormNumberInput,
   fallback: AutoFormInput,
 };
 
