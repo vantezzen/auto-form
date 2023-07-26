@@ -9,6 +9,14 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 
+enum Sports {
+  Football = "football",
+  Basketball = "basketball",
+  Baseball = "baseball",
+  Hockey = "hockey",
+  None = "none",
+}
+
 const formSchema = z.object({
   username: z
     .string({
@@ -58,6 +66,9 @@ const formSchema = z.object({
   marshmallows: z
     .enum(["not many", "a few", "a lot", "too many"])
     .describe("How many marshmallows fit in your mouth?"),
+  
+  // Native enum example
+  sports: z.nativeEnum(Sports).describe("What is your favourite sport?"),
 
   bio: z
     .string()
@@ -137,6 +148,10 @@ function Basics() {
 
                 marshmallows: {
                   fieldType: "radio",
+                },
+
+                sports: {
+                  fieldType: "select"
                 },
 
                 customParent: {

@@ -390,7 +390,11 @@ function AutoFormEnum({
   fieldConfigItem,
   zodItem,
 }: AutoFormInputComponentProps) {
-  const values = (zodItem as unknown as z.ZodEnum<any>)._def.values;
+  let values = (zodItem as unknown as z.ZodEnum<any>)._def.values;
+
+  if(!Array.isArray(values)) {
+    values = Object.values(values);
+  }
 
   return (
     <FormItem>
@@ -442,6 +446,7 @@ const DEFAULT_ZOD_HANDLERS: {
   ZodBoolean: "checkbox",
   ZodDate: "date",
   ZodEnum: "select",
+  ZodNativeEnum: "select",
 };
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
@@ -527,6 +532,7 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                       ...zodInputProps,
                       ...field,
                       ...fieldConfigItem.inputProps,
+                      value: field.value ?? "",
                     }}
                   />
                 </ParentElement>
