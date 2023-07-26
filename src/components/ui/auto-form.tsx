@@ -242,6 +242,18 @@ function AutoFormInput({
   );
 }
 
+function AutoFormNumber({ fieldProps, ...props }: AutoFormInputComponentProps) {
+  return (
+    <AutoFormInput
+      fieldProps={{
+        type: "number",
+        ...fieldProps,
+      }}
+      {...props}
+    />
+  );
+}
+
 function AutoFormTextarea({
   label,
   isRequired,
@@ -442,6 +454,7 @@ const INPUT_COMPONENTS = {
   radio: AutoFormRadioGroup,
   switch: AutoFormSwitch,
   textarea: AutoFormTextarea,
+  number: AutoFormNumber,
   fallback: AutoFormInput,
 };
 
@@ -456,6 +469,7 @@ const DEFAULT_ZOD_HANDLERS: {
   ZodDate: "date",
   ZodEnum: "select",
   ZodNativeEnum: "select",
+  ZodNumber: "number",
 };
 
 function DefaultParent({ children }: { children: React.ReactNode }) {

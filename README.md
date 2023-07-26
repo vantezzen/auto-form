@@ -134,9 +134,6 @@ function App() {
         favouriteNumber: {
           // Set a "description" that will be shown below the field
           description: "Your favourite number between 1 and 10.",
-          inputProps: {
-            type: "number",
-          },
         },
         acceptTerms: {
           inputProps: {

@@ -66,7 +66,7 @@ const formSchema = z.object({
   marshmallows: z
     .enum(["not many", "a few", "a lot", "too many"])
     .describe("How many marshmallows fit in your mouth?"),
-  
+
   // Native enum example
   sports: z.nativeEnum(Sports).describe("What is your favourite sport?"),
 
@@ -108,9 +108,6 @@ function Basics() {
                 },
                 favouriteNumber: {
                   description: "Your favourite number between 1 and 10.",
-                  inputProps: {
-                    type: "number",
-                  },
                 },
                 acceptTerms: {
                   inputProps: {
@@ -148,10 +145,6 @@ function Basics() {
 
                 marshmallows: {
                   fieldType: "radio",
-                },
-
-                sports: {
-                  fieldType: "select"
                 },
 
                 customParent: {
