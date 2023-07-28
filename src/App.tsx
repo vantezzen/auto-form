@@ -7,7 +7,7 @@ import SubObject from "./examples/SubObject";
 function App() {
   return (
     <>
-      <div className="max-w-lg mx-auto my-6 space-y-8">
+      <div className="mx-auto my-6 max-w-lg space-y-8">
         <Basics />
         <SubObject />
         <Controlled />

@@ -86,7 +86,7 @@ const formSchema = z.object({
 function Basics() {
   return (
     <>
-      <div className="max-w-lg mx-auto my-6">
+      <div className="mx-auto my-6 max-w-lg">
         <Card>
           <CardHeader>
             <CardTitle>AutoForm Example</CardTitle>
@@ -116,8 +116,7 @@ function Basics() {
                   description: (
                     <>
                       I agree to the{" "}
-                      <a
-                        href="#"
+                      <button
                         className="text-primary underline"
                         onClick={(e) => {
                           e.preventDefault();
@@ -125,7 +124,7 @@ function Basics() {
                         }}
                       >
                         terms and conditions
-                      </a>
+                      </button>
                       .
                     </>
                   ),

@@ -24,7 +24,7 @@ const formSchema = z.object({
 function SubObject() {
   return (
     <>
-      <div className="max-w-lg mx-auto my-6">
+      <div className="mx-auto my-6 max-w-lg">
         <Card>
           <CardHeader>
             <CardTitle>Sub Object</CardTitle>

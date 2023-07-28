@@ -501,6 +501,16 @@ All children passed to the `AutoForm` component will be rendered below the form.
 </AutoForm>
 ```
 
+# Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+1. Fork the repository
+1. Clone your fork and install dependencies with `npm install`
+1. Run `npm run dev` to start the development server and make your changes
+1. Run `npm run fix` to run the formatter and linter
+1. Commit your changes and open a pull request
+
 # License
 
 MIT

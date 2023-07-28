@@ -7,6 +7,9 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "eslint-config-prettier",
+    "plugin:tailwindcss/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -15,7 +18,7 @@ module.exports = {
     project: true,
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh", "unused-imports"],
+  plugins: ["react-refresh", "unused-imports", "tailwindcss"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -25,5 +28,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "no-unused-vars": "off", // or "@typescript-eslint/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
+    "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/classnames-order": "error",
   },
 };
