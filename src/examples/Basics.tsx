@@ -81,6 +81,7 @@ const formSchema = z.object({
     .optional(),
 
   customParent: z.string().optional(),
+  countryOptions: z.string().optional()
 });
 
 function Basics() {
@@ -156,6 +157,15 @@ function Basics() {
                     </div>
                   ),
                 },
+                countryOptions: {
+                  fieldType: 'options',
+                  options: [
+                    { label: "USA", value: "USA" },
+                    { label: "Canada", value: "Canada" },
+                    { label: "UK", value: "UK" },
+                    { label: "Australia", value: "Australia" }
+                  ],
+                }
               }}
             >
               <AutoFormSubmit>Send now</AutoFormSubmit>
