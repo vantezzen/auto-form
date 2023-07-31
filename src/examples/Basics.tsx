@@ -10,11 +10,11 @@ import {
 import { Button } from "../components/ui/button";
 
 enum Sports {
-  Football = "football",
-  Basketball = "basketball",
-  Baseball = "baseball",
-  Hockey = "hockey",
-  None = "none",
+  Football = "Football/Soccer",
+  Basketball = "Basketball",
+  Baseball = "Baseball",
+  Hockey = "Hockey (Ice)",
+  None = "I don't like sports",
 }
 
 const formSchema = z.object({

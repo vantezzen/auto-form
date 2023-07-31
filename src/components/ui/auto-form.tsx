@@ -85,12 +85,12 @@ function getDefaultValueInZodStack(schema: z.ZodAny): any {
 
   if ("innerType" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      typedSchema._def.innerType as unknown as z.ZodAny,
+      typedSchema._def.innerType as unknown as z.ZodAny
     );
   }
   if ("schema" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      (typedSchema._def as any).schema as z.ZodAny,
+      (typedSchema._def as any).schema as z.ZodAny
     );
   }
   return undefined;
@@ -100,7 +100,7 @@ function getDefaultValueInZodStack(schema: z.ZodAny): any {
  * Get all default values from a Zod schema.
  */
 function getDefaultValues<Schema extends z.ZodObject<any, any>>(
-  schema: Schema,
+  schema: Schema
 ) {
   const { shape } = schema;
   type DefaultValuesType = DefaultValues<Partial<z.infer<Schema>>>;
@@ -111,7 +111,7 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 
     if (getBaseType(item) === "ZodObject") {
       const defaultItems = getDefaultValues(
-        item as unknown as z.ZodObject<any, any>,
+        item as unknown as z.ZodObject<any, any>
       );
       for (const defaultItemKey of Object.keys(defaultItems)) {
         const pathKey = `${key}.${defaultItemKey}` as keyof DefaultValuesType;
@@ -129,7 +129,7 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 }
 
 function getObjectFormSchema(
-  schema: ZodObjectOrWrapped,
+  schema: ZodObjectOrWrapped
 ): z.ZodObject<any, any> {
   if (schema._def.typeName === "ZodEffects") {
     const typedSchema = schema as z.ZodEffects<z.ZodObject<any, any>>;
@@ -147,7 +147,7 @@ function zodToHtmlInputProps(
     | z.ZodNumber
     | z.ZodString
     | z.ZodOptional<z.ZodNumber | z.ZodString>
-    | any,
+    | any
 ): React.InputHTMLAttributes<HTMLInputElement> {
   if (["ZodOptional", "ZodNullable"].includes(schema._def.typeName)) {
     const typedSchema = schema as z.ZodOptional<z.ZodNumber | z.ZodString>;
@@ -410,11 +410,18 @@ function AutoFormEnum({
   fieldConfigItem,
   zodItem,
 }: AutoFormInputComponentProps) {
-  let values = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
+  const baseValues = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
     .values;
 
-  if (!Array.isArray(values)) {
-    values = Object.values(values);
+  let values: [string, string][] = [];
+  if (!Array.isArray(baseValues)) {
+    values = Object.entries(baseValues);
+  } else {
+    values = baseValues.map((value) => [value, value]);
+  }
+
+  function findItem(value: any) {
+    return values.find((item) => item[0] === value);
   }
 
   return (
@@ -427,13 +434,13 @@ function AutoFormEnum({
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <SelectTrigger>
             <SelectValue className="w-full">
-              {field.value ?? "Select an option"}
+              {field.value ? findItem(field.value)?.[1] : "Select an option"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {values.map((value: any) => (
+            {values.map(([value, label]) => (
               <SelectItem value={value} key={value}>
-                {value}
+                {label}
               </SelectItem>
             ))}
           </SelectContent>

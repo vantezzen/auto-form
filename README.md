@@ -303,6 +303,27 @@ const formSchema = z.object({
 });
 ```
 
+#### Select/Enums
+
+AutoForm supports `enum` and `nativeEnum` to create select fields.
+
+```tsx
+const formSchema = z.object({
+  color: z.enum(["red", "green", "blue"]),
+});
+
+enum BreadTypes {
+  // For native enums, you can alternatively define a backed enum to set a custom label
+  White = "White bread",
+  Brown = "Brown bread",
+  Wholegrain = "Wholegrain bread",
+  Other,
+}
+const formSchema = z.object({
+  bread: z.nativeEnum(BreadTypes),
+});
+```
+
 ### Field configuration
 
 As zod doesn't allow adding other properties to the schema, you can use the `fieldConfig` prop to add additional configuration for the UI of each field.
