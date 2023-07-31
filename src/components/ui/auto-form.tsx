@@ -39,21 +39,6 @@ import {
 } from "./accordion";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 
-type SelectOption = {
-  label: string;
-  value: string | number;
-};
-
-type AutoFormSelectProps = {
-  field: ControllerRenderProps<FieldValues, any>;
-  fieldConfigItem: {
-    description?: React.ReactNode;
-    options?: SelectOption[];
-  };
-  label: string;
-  isRequired: boolean;
-};
-
 /**
  * Beautify a camelCase string.
  * e.g. "myString" -> "My String"
@@ -206,20 +191,19 @@ export type FieldConfigItem = {
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   fieldType?:
-  | keyof typeof INPUT_COMPONENTS
-  | React.FC<AutoFormInputComponentProps>;
-  options?: SelectOption[];
+    | keyof typeof INPUT_COMPONENTS
+    | React.FC<AutoFormInputComponentProps>;
 
   renderParent?: (props: {
     children: React.ReactNode;
-  }) => React.ReactElement | null | undefined;
+  }) => React.ReactElement | null;
 };
 
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
   // If SchemaType.key is an object, create a nested FieldConfig, otherwise FieldConfigItem
   [Key in keyof SchemaType]?: SchemaType[Key] extends object
-  ? FieldConfig<z.infer<SchemaType[Key]>>
-  : FieldConfigItem;
+    ? FieldConfig<z.infer<SchemaType[Key]>>
+    : FieldConfigItem;
 };
 
 /**
@@ -426,11 +410,18 @@ function AutoFormEnum({
   fieldConfigItem,
   zodItem,
 }: AutoFormInputComponentProps) {
-  let values = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
+  const baseValues = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
     .values;
 
-  if (!Array.isArray(values)) {
-    values = Object.values(values);
+  let values: [string, string][] = [];
+  if (!Array.isArray(baseValues)) {
+    values = Object.entries(baseValues);
+  } else {
+    values = baseValues.map((value) => [value, value]);
+  }
+
+  function findItem(value: any) {
+    return values.find((item) => item[0] === value);
   }
 
   return (
@@ -443,52 +434,18 @@ function AutoFormEnum({
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <SelectTrigger>
             <SelectValue className="w-full">
-              {field.value ?? "Select an option"}
+              {field.value ? findItem(field.value)?.[1] : "Select an option"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {values.map((value: any) => (
+            {values.map(([value, label]) => (
               <SelectItem value={value} key={value}>
-                {value}
+                {label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </FormControl>
-      {fieldConfigItem.description && (
-        <FormDescription>{fieldConfigItem.description}</FormDescription>
-      )}
-      <FormMessage />
-    </FormItem>
-  );
-}
-
-function AutoFormSelect({
-  label,
-  isRequired,
-  field,
-  fieldConfigItem,
-}: AutoFormSelectProps) {
-  return (
-    <FormItem>
-      <FormLabel>
-        {label}
-        {isRequired && <span className="text-destructive"> *</span>}
-      </FormLabel>
-      <Select onValueChange={field.onChange} defaultValue={field.value} disabled={fieldConfigItem.options === undefined}>
-        {fieldConfigItem.options !== undefined ? (
-          <>
-            <SelectTrigger>{field.value ? fieldConfigItem.options.find(option => option.value === field.value)?.label : "Select an option"}</SelectTrigger>
-            <SelectContent>
-              {fieldConfigItem.options.map((option) => (
-                <SelectItem value={String(option.value)} key={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </>
-        ) : null}
-      </Select>
       {fieldConfigItem.description && (
         <FormDescription>{fieldConfigItem.description}</FormDescription>
       )}
@@ -505,7 +462,6 @@ const INPUT_COMPONENTS = {
   switch: AutoFormSwitch,
   textarea: AutoFormTextarea,
   number: AutoFormNumber,
-  options: AutoFormSelect,
   fallback: AutoFormInput,
 };
 
@@ -521,7 +477,6 @@ const DEFAULT_ZOD_HANDLERS: {
   ZodEnum: "select",
   ZodNativeEnum: "select",
   ZodNumber: "number",
-  ZodSelect: "options",
 };
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
@@ -567,36 +522,6 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
               </AccordionContent>
             </AccordionItem>
           );
-        } else if (zodBaseType === "ZodSelect") {
-          const options = (item as unknown as z.ZodEnum<any>)._def.values.map(
-            (value: any) => ({ label: value, value })
-          );
-          return (
-            <FormField
-              control={form.control}
-              name={key}
-              key={key}
-              render={({ field }) => {
-                const fieldConfigItem: FieldConfigItem =
-                  fieldConfig?.[name] ?? {};
-                const isRequired =
-                  zodToHtmlInputProps(item).required ??
-                  fieldConfigItem.inputProps?.required ??
-                  false;
-
-                return (
-                  <DefaultParent key={`${key}.parent`}>
-                    <AutoFormSelect
-                      field={field}
-                      fieldConfigItem={{ ...fieldConfigItem, options }}
-                      label={itemName}
-                      isRequired={isRequired}
-                    />
-                  </DefaultParent>
-                );
-              }}
-            />
-          );
         }
 
         const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
@@ -621,9 +546,11 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                 typeof inputType === "function"
                   ? inputType
                   : INPUT_COMPONENTS[inputType];
+              const ParentElement =
+                fieldConfigItem.renderParent ?? DefaultParent;
 
               return (
-                <DefaultParent key={`${key}.parent`}>
+                <ParentElement key={`${key}.parent`}>
                   <InputComponent
                     zodInputProps={zodInputProps}
                     field={field}
@@ -635,10 +562,12 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                       ...zodInputProps,
                       ...field,
                       ...fieldConfigItem.inputProps,
-                      value: field.value ?? "",
+                      value: !fieldConfigItem.inputProps?.defaultValue
+                        ? field.value ?? ""
+                        : undefined,
                     }}
                   />
-                </DefaultParent>
+                </ParentElement>
               );
             }}
           />

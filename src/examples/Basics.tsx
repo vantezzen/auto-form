@@ -10,11 +10,11 @@ import {
 import { Button } from "../components/ui/button";
 
 enum Sports {
-  Football = "football",
-  Basketball = "basketball",
-  Baseball = "baseball",
-  Hockey = "hockey",
-  None = "none",
+  Football = "Football/Soccer",
+  Basketball = "Basketball",
+  Baseball = "Baseball",
+  Hockey = "Hockey (Ice)",
+  None = "I don't like sports",
 }
 
 const formSchema = z.object({
@@ -81,7 +81,6 @@ const formSchema = z.object({
     .optional(),
 
   customParent: z.string().optional(),
-  countryOptions: z.string().optional()
 });
 
 function Basics() {
@@ -157,15 +156,6 @@ function Basics() {
                     </div>
                   ),
                 },
-                countryOptions: {
-                  fieldType: 'options',
-                  options: [
-                    { label: "USA", value: "USA" },
-                    { label: "Canada", value: "Canada" },
-                    { label: "UK", value: "UK" },
-                    { label: "Australia", value: "Australia" }
-                  ],
-                }
               }}
             >
               <AutoFormSubmit>Send now</AutoFormSubmit>
