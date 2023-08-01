@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import React from "react";
 
 function Json({ data, className }: { data: any; className?: string }) {
   return (
