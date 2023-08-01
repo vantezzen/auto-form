@@ -326,7 +326,7 @@ const formSchema = z.object({
 
 #### Arrays
 
-AutoForm supports Array _of objects_. Because inferring things like field labels from arrays of strings/numbers/etc. is difficult, only objects are supported.
+AutoForm supports arrays _of objects_. Because inferring things like field labels from arrays of strings/numbers/etc. is difficult, only objects are supported.
 
 ```tsx
 const formSchema = z.object({
@@ -337,7 +337,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
