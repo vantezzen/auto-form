@@ -324,6 +324,28 @@ const formSchema = z.object({
 });
 ```
 
+#### Arrays
+
+AutoForm supports Array _of objects_. Because inferring things like field labels from arrays of strings/numbers/etc. is difficult, only objects are supported.
+
+```tsx
+const formSchema = z.object({
+  guestListName: z.string(),
+  invitedGuests: z
+    .array(
+      // Define the fields for each item
+      z.object({
+        name: z.string(),
+        age: z.coerce.number(),
+      }),
+    )
+    // Optionally set a custom label - otherwise this will be inferred from the field name
+    .describe("Guests invited to the party"),
+});
+```
+
+Arrays are not supported as the root element of the form schema.
+
 ### Field configuration
 
 As zod doesn't allow adding other properties to the schema, you can use the `fieldConfig` prop to add additional configuration for the UI of each field.

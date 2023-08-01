@@ -14,6 +14,7 @@ import {
   ControllerRenderProps,
   DefaultValues,
   FieldValues,
+  useFieldArray,
   useForm,
 } from "react-hook-form";
 import {
@@ -38,6 +39,8 @@ import {
   AccordionTrigger,
 } from "./accordion";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
+import { Separator } from "./separator";
+import { Plus, Trash } from "lucide-react";
 
 /**
  * Beautify a camelCase string.
@@ -85,12 +88,12 @@ function getDefaultValueInZodStack(schema: z.ZodAny): any {
 
   if ("innerType" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      typedSchema._def.innerType as unknown as z.ZodAny
+      typedSchema._def.innerType as unknown as z.ZodAny,
     );
   }
   if ("schema" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      (typedSchema._def as any).schema as z.ZodAny
+      (typedSchema._def as any).schema as z.ZodAny,
     );
   }
   return undefined;
@@ -100,7 +103,7 @@ function getDefaultValueInZodStack(schema: z.ZodAny): any {
  * Get all default values from a Zod schema.
  */
 function getDefaultValues<Schema extends z.ZodObject<any, any>>(
-  schema: Schema
+  schema: Schema,
 ) {
   const { shape } = schema;
   type DefaultValuesType = DefaultValues<Partial<z.infer<Schema>>>;
@@ -111,7 +114,7 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 
     if (getBaseType(item) === "ZodObject") {
       const defaultItems = getDefaultValues(
-        item as unknown as z.ZodObject<any, any>
+        item as unknown as z.ZodObject<any, any>,
       );
       for (const defaultItemKey of Object.keys(defaultItems)) {
         const pathKey = `${key}.${defaultItemKey}` as keyof DefaultValuesType;
@@ -129,7 +132,7 @@ function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 }
 
 function getObjectFormSchema(
-  schema: ZodObjectOrWrapped
+  schema: ZodObjectOrWrapped,
 ): z.ZodObject<any, any> {
   if (schema._def.typeName === "ZodEffects") {
     const typedSchema = schema as z.ZodEffects<z.ZodObject<any, any>>;
@@ -147,7 +150,7 @@ function zodToHtmlInputProps(
     | z.ZodNumber
     | z.ZodString
     | z.ZodOptional<z.ZodNumber | z.ZodString>
-    | any
+    | any,
 ): React.InputHTMLAttributes<HTMLInputElement> {
   if (["ZodOptional", "ZodNullable"].includes(schema._def.typeName)) {
     const typedSchema = schema as z.ZodOptional<z.ZodNumber | z.ZodString>;
@@ -433,9 +436,10 @@ function AutoFormEnum({
       <FormControl>
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <SelectTrigger>
-            <SelectValue 
-              className="w-full" 
-              placeholder={fieldConfigItem.inputProps?.placeholder}>
+            <SelectValue
+              className="w-full"
+              placeholder={fieldConfigItem.inputProps?.placeholder}
+            >
               {field.value ? findItem(field.value)?.[1] : "Select an option"}
             </SelectValue>
           </SelectTrigger>
@@ -504,7 +508,7 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
         const item = shape[name] as z.ZodAny;
         const zodBaseType = getBaseType(item);
         const itemName = item._def.description ?? beautifyObjectName(name);
-        const key = `${path.join(".")}.${name}`;
+        const key = [...path, name].join(".");
 
         if (zodBaseType === "ZodObject") {
           return (
@@ -523,6 +527,17 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
                 />
               </AccordionContent>
             </AccordionItem>
+          );
+        }
+        if (zodBaseType === "ZodArray") {
+          return (
+            <AutoFormArray
+              key={key}
+              name={name}
+              item={item as unknown as z.ZodArray<any>}
+              form={form}
+              path={[...path, name]}
+            />
           );
         }
 
@@ -576,6 +591,61 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
         );
       })}
     </Accordion>
+  );
+}
+
+function AutoFormArray({
+  name,
+  item,
+  form,
+  path = [],
+}: {
+  name: string;
+  item: z.ZodArray<any>;
+  form: ReturnType<typeof useForm>;
+  path?: string[];
+}) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name,
+  });
+  const title = item._def.description ?? beautifyObjectName(name);
+
+  return (
+    <AccordionItem value={name}>
+      <AccordionTrigger>{title}</AccordionTrigger>
+      <AccordionContent className="border-l p-3 pl-6">
+        {fields.map((field, index) => {
+          const key = [...path, index.toString()].join(".");
+          return (
+            <div className="mb-4 grid gap-6" key={`${key}`}>
+              <AutoFormObject
+                schema={item._def.type as z.ZodObject<any, any>}
+                form={form}
+                path={[...path, index.toString()]}
+              />
+              <Button
+                variant="secondary"
+                size="icon"
+                type="button"
+                onClick={() => remove(index)}
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+              <Separator />
+            </div>
+          );
+        })}
+        <Button
+          type="button"
+          onClick={() => append({})}
+          className="flex items-center"
+        >
+          <Plus className="mr-2" size={16} />
+          Add
+        </Button>
+      </AccordionContent>
+    </AccordionItem>
   );
 }
 
