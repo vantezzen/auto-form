@@ -513,6 +513,14 @@ const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>({});
 
 Please note that the data is not validated or coerced when using this method as they update immediately.
 
+Alternatively, you can use `onParsedValuesChange` to get updated values only when the values can be validated and parsed with zod:
+
+```tsx
+const [values, setValues] = useState<z.infer<typeof formSchema>>({});
+
+<AutoForm values={values} onParsedValuesChange={setValues} />;
+```
+
 ### Submitting the form
 
 You can use the `AutoFormSubmit` component to create a submit button.

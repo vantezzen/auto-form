@@ -56,14 +56,14 @@ function beautifyObjectName(string: string) {
  * Get the lowest level Zod type.
  * This will unpack optionals, refinements, etc.
  */
-function getBaseSchema(schema: z.ZodAny): z.ZodAny {
+function getBaseSchema(schema: z.ZodAny | z.ZodEffects<z.ZodAny>): z.ZodAny {
   if ("innerType" in schema._def) {
     return getBaseSchema(schema._def.innerType as z.ZodAny);
   }
   if ("schema" in schema._def) {
     return getBaseSchema(schema._def.schema as z.ZodAny);
   }
-  return schema;
+  return schema as z.ZodAny;
 }
 
 /**
@@ -662,6 +662,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formSchema,
   values: valuesProp,
   onValuesChange: onValuesChangeProp,
+  onParsedValuesChange,
   onSubmit: onSubmitProp,
   fieldConfig,
   children,
@@ -670,6 +671,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   children?: React.ReactNode;
@@ -700,9 +702,10 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
         }}
         onChange={() => {
           const values = form.getValues();
+          onValuesChangeProp?.(values);
           const parsedValues = formSchema.safeParse(values);
           if (parsedValues.success) {
-            onValuesChangeProp?.(parsedValues.data);
+            onParsedValuesChange?.(parsedValues.data);
           }
         }}
         className={cn("space-y-5", className)}
