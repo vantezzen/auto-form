@@ -1,5 +1,4 @@
 import * as z from "zod";
-import AutoForm from "../components/ui/auto-form";
 import {
   Card,
   CardContent,
@@ -7,16 +6,18 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import React from "react";
+import { useEffect, useState } from "react";
+import Combobox from "../components/ui/combobox"; // Import the ComboboxDemo component from the separate file
 
 function Api() {
-  const [formSchema, setFormSchema] = React.useState<z.ZodObject<
+  const [formSchema, setFormSchema] = useState<z.ZodObject<
     any,
     any,
     any
   > | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string>("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
       .then((data) => {
@@ -41,7 +42,11 @@ function Api() {
 
           <CardContent>
             {formSchema ? (
-              <AutoForm formSchema={formSchema} onSubmit={console.log} />
+              <Combobox
+                users={formSchema.shape.user._def.values}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+              />
             ) : (
               <div>Loading...</div>
             )}
