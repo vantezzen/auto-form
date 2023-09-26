@@ -544,8 +544,8 @@ function AutoFormObject<SchemaType extends z.ZodObject<any, any>>({
         const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
         const zodInputProps = zodToHtmlInputProps(item);
         const isRequired =
-          zodInputProps.required ??
-          fieldConfigItem.inputProps?.required ??
+          zodInputProps.required ||
+          fieldConfigItem.inputProps?.required ||
           false;
 
         return (
