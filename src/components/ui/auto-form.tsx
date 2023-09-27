@@ -230,10 +230,8 @@ function AutoFormInput({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
-  const showLabel =
-    fieldConfigItem.inputProps?.showLabel === undefined
-      ? true
-      : fieldConfigItem.inputProps?.showLabel;
+  const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
+  const showLabel = _showLabel === undefined ? true : _showLabel;
   return (
     <FormItem>
       {showLabel && (
@@ -243,7 +241,7 @@ function AutoFormInput({
         </FormLabel>
       )}
       <FormControl>
-        <Input type="text" {...fieldProps} />
+        <Input type="text" {...fieldPropsWithoutShowLabel} />
       </FormControl>
       {fieldConfigItem.description && (
         <FormDescription>{fieldConfigItem.description}</FormDescription>
