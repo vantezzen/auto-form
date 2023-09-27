@@ -230,7 +230,6 @@ function AutoFormInput({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
-  console.log(fieldConfigItem.inputProps?.showLabel);
   const showLabel =
     fieldConfigItem.inputProps?.showLabel === undefined
       ? true
