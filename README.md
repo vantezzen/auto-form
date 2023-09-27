@@ -337,7 +337,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      })
+      }),
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
@@ -379,6 +379,22 @@ You can use the `inputProps` property to pass props to the input component. You 
 
 // This will be rendered as:
 <input type="text" placeholder="Username" /* ... */ />
+```
+
+Disabling the label of an input can be done by using the `showLabel` property in `inputProps`.
+
+```tsx
+<AutoForm
+  fieldConfig={{
+    username: {
+      inputProps: {
+        type: "text",
+        placeholder: "Username",
+        showLabel: false,
+      },
+    },
+  }}
+/>
 ```
 
 #### Field type
