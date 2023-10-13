@@ -19,6 +19,12 @@ const formSchema = z.object({
       })
       .describe("Sub Sub Object Description"),
   }),
+  optionalSubObject: z
+    .object({
+      optionalSubField: z.string(),
+      otherOptionalSubField: z.string(),
+    })
+    .optional(),
 });
 
 function SubObject() {

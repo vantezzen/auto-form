@@ -32,7 +32,7 @@ You can install them all at once with:
 npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea toggle
 ```
 
-To install the component itself, copy `auto-form.tsx` and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
+To install the component itself, copy the `auto-form` folder and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
 
 ## Field types
 
@@ -44,7 +44,7 @@ Currently, these field types are supported out of the box:
 - number (input)
 - string (input, textfield)
 
-You can add support for other field types by adding them to the `INPUT_COMPONENTS` object in `auto-form.tsx`.
+You can add support for other field types by adding them to the `INPUT_COMPONENTS` object in `auto-form/config.tsx`.
 
 ## Usage
 
@@ -319,6 +319,7 @@ enum BreadTypes {
   Wholegrain = "Wholegrain bread",
   Other,
 }
+// Keep in mind that zod will validate and return the enum labels, not the enum values!
 const formSchema = z.object({
   bread: z.nativeEnum(BreadTypes),
 });
@@ -337,7 +338,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
@@ -577,6 +578,14 @@ Contributions are welcome! Please open an issue or submit a pull request.
 1. Run `npm run dev` to start the development server and make your changes
 1. Run `npm run fix` to run the formatter and linter
 1. Commit your changes and open a pull request
+
+## Adding new components
+
+If you want to add a new component, please make sure to add it to the `INPUT_COMPONENTS` object in `auto-form/config.tsx`.
+
+1. Create a new component in `src/components/ui/auto-form/fields`. You can copy an existing component (like `input.tsx`) as a starting point.
+2. Add the component to the `INPUT_COMPONENTS` object in `auto-form/config.tsx` to give it a name.
+3. Optionally, add the component name as a default handler for a zod type in `auto-form/config.tsx` under `DEFAULT_ZOD_HANDLERS`.
 
 # License
 
