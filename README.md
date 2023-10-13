@@ -34,6 +34,8 @@ npx shadcn-ui@latest add accordion button calendar card checkbox form input labe
 
 To install the component itself, copy the `auto-form` folder and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
 
+You can remove the tests folder in `auto-form/tests`.
+
 ## Field types
 
 Currently, these field types are supported out of the box:
@@ -577,6 +579,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 1. Clone your fork and install dependencies with `npm install`
 1. Run `npm run dev` to start the development server and make your changes
 1. Run `npm run fix` to run the formatter and linter
+1. Run `npm test` to run the tests
 1. Commit your changes and open a pull request
 
 ## Adding new components

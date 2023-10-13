@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
     "fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix && prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "cypress open"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
@@ -53,6 +54,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-react": "^4.0.1",
     "autoprefixer": "^10.4.14",
+    "cypress": "^13.3.1",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
