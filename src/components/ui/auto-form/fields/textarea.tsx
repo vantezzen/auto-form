@@ -14,14 +14,18 @@ export default function AutoFormTextarea({
   fieldConfigItem,
   fieldProps,
 }: AutoFormInputComponentProps) {
+  const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
+  const showLabel = _showLabel === undefined ? true : _showLabel;
   return (
     <FormItem>
-      <FormLabel>
-        {label}
-        {isRequired && <span className="text-destructive"> *</span>}
-      </FormLabel>
+      {showLabel && (
+        <FormLabel>
+          {label}
+          {isRequired && <span className="text-destructive"> *</span>}
+        </FormLabel>
+      )}
       <FormControl>
-        <Textarea {...fieldProps} />
+        <Textarea {...fieldPropsWithoutShowLabel} />
       </FormControl>
       {fieldConfigItem.description && (
         <FormDescription>{fieldConfigItem.description}</FormDescription>
