@@ -10,20 +10,17 @@ import {
 import { useState } from "react";
 import Json from "@/components/ui/json";
 
-const appliances = ["Fridge", "Dispenser", "Iron", "Electric Kettle"]
+const appliances = ["Fridge", "Dispenser", "Iron", "Electric Kettle"];
 
 const formSchema = z.object({
   invitedGuests: z
     .array(
       z.object({
-        Appliances: z
-        .array(
+        Appliances: z.array(
           z.object({
-            appliance: z.enum(
-              appliances
-            ),
-            dailyUsageInHours: z.number()
-          })
+            appliance: z.enum(appliances),
+            dailyUsageInHours: z.number(),
+          }),
         ),
       }),
     )
@@ -39,9 +36,7 @@ function Array() {
         <Card>
           <CardHeader>
             <CardTitle>Array support</CardTitle>
-            <CardDescription>
-              Individual room information
-            </CardDescription>
+            <CardDescription>Individual room information</CardDescription>
           </CardHeader>
 
           <CardContent>

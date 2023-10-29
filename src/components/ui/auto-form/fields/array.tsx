@@ -30,6 +30,7 @@ export default function AutoFormArray({
 
   return (
     <AccordionItem value={name}>
+      {/* I want to keep the accordion trigger open by default */}
       <AccordionTrigger>{title}</AccordionTrigger>
       <AccordionContent className="border-l p-3 pl-6">
         {fields.map((_field, index) => {

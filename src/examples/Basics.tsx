@@ -17,6 +17,16 @@ enum Sports {
   None = "I don't like sports",
 }
 
+const numberSchema = z.coerce
+  .number({
+    invalid_type_error: 'Invalid input for the number field.',
+  })
+  .min(0, {
+    message: 'Please enter a positive number.',
+  });
+
+const radioSchema = z.nativeEnum(Sports);
+
 const formSchema = z.object({
   people: z.coerce
     .number({
@@ -26,6 +36,39 @@ const formSchema = z.object({
       message: "Please enter a positive number",
     })
     .describe("How many people live in your house?"),
+  octBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .max(2000, {
+      message: "Please enter a number less than 2000",
+    })
+    .describe("How many units of electricity did you consume in October?"),
+  sepBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .max(2000, {
+      message: "Please enter a number less than 2000",
+    })
+    .describe("How many units of electricity did you consume in November?"),
+  augBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .max(2000, {
+      message: "Please enter a number less than 2000",
+    })
+    .describe("How many units of electricity did you consume in August?"),
   username: z
     .string({
       required_error: "Username is required.",
@@ -89,6 +132,11 @@ const formSchema = z.object({
     .optional(),
 
   customParent: z.string().optional(),
+
+  // a number input with a radio input by its side
+  size: z.union([numberSchema, radioSchema])
+    .optional()
+    .describe("What is the size of your house?"),
 });
 
 function Basics() {
@@ -98,9 +146,7 @@ function Basics() {
         <Card>
           <CardHeader>
             <CardTitle>Bill-E</CardTitle>
-            <CardDescription>
-              This survey aims to 
-            </CardDescription>
+            <CardDescription>This survey aims to</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -163,6 +209,10 @@ function Basics() {
                       </div>
                     </div>
                   ),
+                },
+
+                size: {
+                  fieldType: "radioinput",
                 },
               }}
             >
