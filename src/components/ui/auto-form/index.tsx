@@ -19,6 +19,19 @@ import AutoFormObject from "./fields/object";
 export function AutoFormSubmit({ children }: { children?: React.ReactNode }) {
   return <Button type="submit">{children ?? "Submit"}</Button>;
 }
+function convertToCSV(data: any) {
+  const header = Object.keys(data).join(',');
+  const values = Object.values(data).join(',');
+  return `${header}\n${values}\n`;
+}
+
+function downloadCSV(csvContent: string) {
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = 'formData.csv';
+  link.click();
+}
 
 function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formSchema,
@@ -53,6 +66,8 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
       onSubmitProp?.(parsedValues.data);
+      const csvContent = convertToCSV(parsedValues.data);
+      // downloadCSV(csvContent);
     }
   }
 
