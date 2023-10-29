@@ -18,6 +18,14 @@ enum Sports {
 }
 
 const formSchema = z.object({
+  people: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .describe("How many people live in your house?"),
   username: z
     .string({
       required_error: "Username is required.",
@@ -89,9 +97,9 @@ function Basics() {
       <div className="mx-auto my-6 max-w-lg">
         <Card>
           <CardHeader>
-            <CardTitle>AutoForm Example</CardTitle>
+            <CardTitle>Bill-E</CardTitle>
             <CardDescription>
-              Automatically generate a form from a Zod schema.
+              This survey aims to 
             </CardDescription>
           </CardHeader>
 

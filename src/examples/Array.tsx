@@ -10,16 +10,24 @@ import {
 import { useState } from "react";
 import Json from "@/components/ui/json";
 
+const appliances = ["Fridge", "Dispenser", "Iron", "Electric Kettle"]
+
 const formSchema = z.object({
-  guestListName: z.string(),
   invitedGuests: z
     .array(
       z.object({
-        name: z.string(),
-        age: z.coerce.number(),
+        Appliances: z
+        .array(
+          z.object({
+            appliance: z.enum(
+              appliances
+            ),
+            dailyUsageInHours: z.number()
+          })
+        ),
       }),
     )
-    .describe("Guests invited to the party"),
+    .describe("Rooms in your house"),
 });
 
 function Array() {
@@ -32,7 +40,7 @@ function Array() {
           <CardHeader>
             <CardTitle>Array support</CardTitle>
             <CardDescription>
-              You can use arrays in your schemas to create dynamic forms.
+              Individual room information
             </CardDescription>
           </CardHeader>
 
