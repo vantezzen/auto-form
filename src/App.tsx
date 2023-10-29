@@ -1,6 +1,7 @@
 import Api from "./examples/Api";
 import Array from "./examples/Array";
 import Basics from "./examples/Basics";
+import Result from "./examples/Result";
 import ConfirmPassword from "./examples/ConfirmPassword";
 import Controlled from "./examples/Controlled";
 import InputWithoutLabel from "./examples/InputWithoutLabel";
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Basics/>} />
             {/* <Route path="/api" component={Api} /> */}
             <Route path="/rooms" element={<Array/>} />
+            <Route path="/result" element={<Result/>} />
             {/* Add routes for other components */}
           </Routes>
         </div>

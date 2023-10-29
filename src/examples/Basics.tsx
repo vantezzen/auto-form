@@ -18,6 +18,7 @@ enum Units {
 }
 
 const formSchema = z.object({
+  
   people: z.coerce
     .number({
       invalid_type_error: "Kindly enter a number.",
@@ -70,7 +71,13 @@ function Basics() {
         <Card>
           <CardHeader>
             <CardTitle>Bill-E</CardTitle>
-            <CardDescription>This survey aims to</CardDescription>
+            <CardDescription>At Bill-E, we are committed to developing a groundbreaking mobile application to revolutionize the way Pakistan consumes and manages electricity. Your input is invaluable to us in shaping this transformative solution. By participating in this survey, you are contributing to a more sustainable, cost-effective, and efficient energy future for Pakistan.
+
+We're interested in understanding your electricity consumption patterns and needs better, so we can tailor our application to your unique circumstances. Your data will be treated with the utmost privacy and security. Please take a moment to share your insights on your current electricity usage, preferences, and any specific challenges you face.
+
+Your participation not only helps us build a user-friendly and effective application but also contributes to responsible energy usage in Pakistan. Let's work together to reduce electricity bills and promote sustainable practices.
+
+Thank you for being a part of this innovative journey with Bill-E.</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -108,8 +115,10 @@ function Basics() {
                 },
               }}
             >
-              <AutoFormSubmit>
-              Next</AutoFormSubmit>
+              <Link to="/rooms">
+  <AutoFormSubmit>Next</AutoFormSubmit>
+</Link>
+
             </AutoForm>
           </CardContent>
         </Card>

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import * as z from "zod";
 import AutoForm, { AutoFormSubmit } from "../components/ui/auto-form";
 import {
@@ -7,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { useState } from "react";
-import Json from "@/components/ui/json";
 
 const appliances = ["Fridge", "Dispenser", "Iron", "Electric Kettle"];
 
@@ -19,7 +18,9 @@ const formSchema = z.object({
         Appliances: z.array(
           z.object({
             appliance: z.enum(appliances),
-            dailyUsageInHours: z.number(),
+            hours: z
+              .enum(["0-2", "2-4", "4-6", "6-8", "8-16", "16-24"])
+              .describe("Daily Usage in Hours"),
           }),
         ),
       }),
@@ -29,27 +30,67 @@ const formSchema = z.object({
 
 function Array() {
   const [formValues, setFormValues] = useState({});
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSubmit = (values) => {
+    setFormValues(values);
+    setShowResults(true);
+  };
 
   return (
     <>
       <div className="mx-auto my-6 max-w-lg">
         <Card>
           <CardHeader>
-            <CardTitle>Array support</CardTitle>
+            <CardTitle>Room-Wise Data</CardTitle>
             <CardDescription>Individual room information</CardDescription>
           </CardHeader>
 
           <CardContent>
-            <AutoForm
-              formSchema={formSchema}
-              values={formValues}
-              onValuesChange={setFormValues}
-              onSubmit={console.log}
-            >
-              <AutoFormSubmit>Send now</AutoFormSubmit>
-            </AutoForm>
+            {!showResults ? (
+              <AutoForm
+                formSchema={formSchema}
+                values={formValues}
+                onValuesChange={setFormValues}
+                onSubmit={handleSubmit}
+                fieldConfig={{
+                  invitedGuests: {
+                    hourss: {
+                      fieldType: "radio",
+                    },
+                  },
+                  hours: { fieldType: "radio" },
+                }}
+              >
+                <AutoFormSubmit>Send now</AutoFormSubmit>
+              </AutoForm>
+            ) : (
+              <div>
+  <h2>Form Data:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Room</th>
+        <th>Appliance</th>
+        <th>Daily Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      {formValues.invitedGuests.map((room, roomIndex) => (
+        room.Appliances.map((appliance, applianceIndex) => (
+          <tr key={`${roomIndex}-${applianceIndex}`}>
+            <td>Room {roomIndex + 1} </td>
+            <td> { appliance.appliance}</td>
+            <td>{appliance.hours} hours</td>
+          </tr>
+        ))
+      ))}
+    </tbody>
+  </table>
+</div>
 
-            <Json data={formValues} className="mt-6" />
+
+            )}
           </CardContent>
         </Card>
       </div>
