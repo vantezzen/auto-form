@@ -8,6 +8,8 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
 
 enum Sports {
   Football = "Football/Soccer",
@@ -15,6 +17,11 @@ enum Sports {
   Baseball = "Baseball",
   Hockey = "Hockey (Ice)",
   None = "I don't like sports",
+}
+
+enum Units {
+  sqft = "sqft",
+  gaz = "gaz",
 }
 
 const numberSchema = z.coerce
@@ -133,10 +140,7 @@ const formSchema = z.object({
 
   customParent: z.string().optional(),
 
-  // a number input with a radio input by its side
-  size: z.union([numberSchema, radioSchema])
-    .optional()
-    .describe("What is the size of your house?"),
+  size: z.coerce.number().optional().describe("What is the size of your house?"),
 });
 
 function Basics() {
@@ -212,7 +216,32 @@ function Basics() {
                 },
 
                 size: {
-                  fieldType: "radioinput",
+                  renderParent: ({ children }) => (
+                    <div className="flex items-end gap-20">
+                      <div className="flex-5">{children}</div>
+                      <div>
+                        <RadioGroup
+                          onValueChange={(v) => console.log(v)}
+                          defaultValue={Units.sqft}
+                          className="flex flex-col space-y-1"
+                        >
+                          {Object.values(Units).map((value: any) => (
+                            <FormItem
+                              className="flex items-center space-x-5 space-y-0"
+                              key={value}
+                            >
+                              <FormControl>
+                                <RadioGroupItem value={value} />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {value}
+                              </FormLabel>
+                            </FormItem>
+                          ))}
+                        </RadioGroup>
+                      </div>
+                    </div>
+                  ),
                 },
               }}
             >
