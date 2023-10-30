@@ -66,11 +66,10 @@ function Array() {
               </AutoForm>
             ) : (
               <div>
-  <h2>Form Data:</h2>
+  {/* <h2>Form Data:</h2> */}
   <table>
     <thead>
       <tr>
-        <th>Room</th>
         <th>Appliance</th>
         <th>Daily Usage</th>
       </tr>
@@ -85,6 +84,16 @@ function Array() {
           </tr>
         ))
       ))}
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Predicted Units</th>
+      </tr>
+    </thead>
+    <tbody>
+      <td>637 Units</td>
     </tbody>
   </table>
 </div>
