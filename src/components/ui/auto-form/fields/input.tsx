@@ -16,6 +16,8 @@ export default function AutoFormInput({
 }: AutoFormInputComponentProps) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
+  // TODO: Discover how to capture min and max from Zod?
+  const numberConfig = {max: "100", min: "0"};
   return (
     <FormItem>
       {showLabel && (
@@ -25,7 +27,11 @@ export default function AutoFormInput({
         </FormLabel>
       )}
       <FormControl>
-        <Input type="text" {...fieldPropsWithoutShowLabel} />
+        <Input
+          type="text"
+          {...fieldPropsWithoutShowLabel}
+          {...(fieldProps.type === "number" ? numberConfig : null)}
+        />
       </FormControl>
       {fieldConfigItem.description && (
         <FormDescription>{fieldConfigItem.description}</FormDescription>
