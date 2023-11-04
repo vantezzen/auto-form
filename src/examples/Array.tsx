@@ -47,7 +47,6 @@ function Array() {
           </CardHeader>
 
           <CardContent>
-            {!showResults ? (
               <AutoForm
                 formSchema={formSchema}
                 values={formValues}
@@ -64,42 +63,6 @@ function Array() {
               >
                 <AutoFormSubmit>Send now</AutoFormSubmit>
               </AutoForm>
-            ) : (
-              <div>
-  {/* <h2>Form Data:</h2> */}
-  <table>
-    <thead>
-      <tr>
-        <th>Appliance</th>
-        <th>Daily Usage</th>
-      </tr>
-    </thead>
-    <tbody>
-      {formValues.invitedGuests.map((room, roomIndex) => (
-        room.Appliances.map((appliance, applianceIndex) => (
-          <tr key={`${roomIndex}-${applianceIndex}`}>
-            <td>Room {roomIndex + 1} </td>
-            <td> { appliance.appliance}</td>
-            <td>{appliance.hours} hours</td>
-          </tr>
-        ))
-      ))}
-    </tbody>
-  </table>
-  <table>
-    <thead>
-      <tr>
-        <th>Predicted Units</th>
-      </tr>
-    </thead>
-    <tbody>
-      <td>637 Units</td>
-    </tbody>
-  </table>
-</div>
-
-
-            )}
           </CardContent>
         </Card>
       </div>
