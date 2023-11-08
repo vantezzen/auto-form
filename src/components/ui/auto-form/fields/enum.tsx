@@ -4,17 +4,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../form";
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../select";
+} from "@/components/ui/select";
+import * as z from "zod";
+
 import { AutoFormInputComponentProps } from "../types";
 import { getBaseSchema } from "../utils";
-import * as z from "zod";
 
 export default function AutoFormEnum({
   label,
@@ -33,10 +34,6 @@ export default function AutoFormEnum({
     values = baseValues.map((value) => [value, value]);
   }
 
-  function findItem(value: any) {
-    return values.find((item) => item[0] === value);
-  }
-
   return (
     <FormItem>
       <FormLabel>
@@ -44,14 +41,18 @@ export default function AutoFormEnum({
         {isRequired && <span className="text-destructive"> *</span>}
       </FormLabel>
       <FormControl>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+          value={field.value}
+        >
           <SelectTrigger>
             <SelectValue
               className="w-full"
-              placeholder={fieldConfigItem.inputProps?.placeholder}
-            >
-              {field.value ? findItem(field.value)?.[1] : "Select an option"}
-            </SelectValue>
+              placeholder={
+                fieldConfigItem.inputProps?.placeholder ?? "Select an option"
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             {values.map(([value, label]) => (
