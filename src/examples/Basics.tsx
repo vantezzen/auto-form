@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { useState } from "react";
 import AutoForm, { AutoFormSubmit } from "../components/ui/auto-form";
 import {
   Card,
@@ -8,163 +9,228 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import Json from "@/components/ui/json";
 
-enum Sports {
-  Football = "Football/Soccer",
-  Basketball = "Basketball",
-  Baseball = "Baseball",
-  Hockey = "Hockey (Ice)",
-  None = "I don't like sports",
-}
+// read API_URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL
 
-const formSchema = z.object({
-  username: z
-    .string({
-      required_error: "Username is required.",
-    })
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-
-  password: z
-    .string({
-      required_error: "Password is required.",
-    })
-    .describe("Your secure password")
-    .min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
-
-  favouriteNumber: z.coerce
+const basicFormSchema = z.object({
+  
+  people: z.coerce
     .number({
-      invalid_type_error: "Favourite number must be a number.",
+      invalid_type_error: "Kindly enter a number.",
     })
-    .min(1, {
-      message: "Favourite number must be at least 1.",
+    .min(0, {
+      message: "Please enter a positive number",
     })
-    .max(10, {
-      message: "Favourite number must be at most 10.",
+    .describe("How many people live in your house?"),
+
+  size: z.coerce.number().describe("What is the size of your house?"),
+
+  unit: z.enum(["sqft", "gaz", "marla"]).describe("Unit of size"),
+
+  octBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
     })
-    .default(1)
-    .optional(),
-
-  acceptTerms: z
-    .boolean()
-    .describe("Accept terms and conditions.")
-    .refine((value) => value, {
-      message: "You must accept the terms and conditions.",
-      path: ["acceptTerms"],
-    }),
-
-  sendMeMails: z.boolean().optional(),
-
-  birthday: z.coerce.date().optional(),
-
-  color: z.enum(["red", "green", "blue"]).optional(),
-
-  // Another enum example
-  marshmallows: z
-    .enum(["not many", "a few", "a lot", "too many"])
-    .describe("How many marshmallows fit in your mouth?"),
-
-  // Native enum example
-  sports: z.nativeEnum(Sports).describe("What is your favourite sport?"),
-
-  bio: z
-    .string()
-    .min(10, {
-      message: "Bio must be at least 10 characters.",
+    .min(0, {
+      message: "Please enter a positive number",
     })
-    .max(160, {
-      message: "Bio must not be longer than 30 characters.",
+    .max(2000, {
+      message: "Please enter a number less than 2000",
     })
-    .optional(),
+    .describe("How many units of electricity did you consume in October?"),
+  sepBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .max(2000, {
+      message: "Please enter a number less than 2000",
+    })
+    .describe("How many units of electricity did you consume in November?"),
+  augBill: z.coerce
+    .number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .max(2000, {
+      message: "Please enter a number less than 2000",
+    })
+    .describe("How many units of electricity did you consume in August?"),
 
-  customParent: z.string().optional(),
 });
 
-function Basics() {
+const appliances = {
+  'Air Conditioner (Inverter)': 'Air Conditioner (Inverter)',
+  'Air Conditioner (Non-Inverter)': 'Air Conditioner (Non-Inverter)',
+  'Refrigerator': 'Refrigerator',
+  'Washing Machine': 'Washing Machine',
+  'Water Dispenser': 'Water Dispenser',
+  'Deep Freezer': 'Deep Freezer',
+  'Electric Oven': 'Electric Oven',
+  'Microwave Oven': 'Microwave Oven',
+  'Electric Kettle': 'Electric Kettle',
+  'Television': 'Television',
+  'Desktop Computer': 'Desktop Computer',
+  'Gaming Consoles/Laptops': 'Gaming Consoles/Laptops',
+  'Water heater/Electric Geyser': 'Water heater/Electric Geyser',
+  'Iron': 'Iron',
+  'Electric Stove': 'Electric Stove',
+}
+
+const arrayFormSchema = z.object({
+  rooms: z
+    .array(
+      z.object({
+        Appliances: z.array(
+          z.object({
+            appliance: z.nativeEnum(appliances),
+            hours: z
+              .enum(["0-2", "2-4", "4-6", "6-8", "8-16", "16-24"])
+              .describe("Daily Usage in Hours"),
+          }),
+        ),
+      }),
+    )
+    .describe("Rooms in your house"),
+    fans: z
+    .coerce.number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .describe("How many fans do you have in your house?"),
+  lights: z
+    .coerce.number({
+      invalid_type_error: "Kindly enter a number.",
+    })
+    .min(0, {
+      message: "Please enter a positive number",
+    })
+    .describe("How many lights do you have in your house?"),
+})
+
+function PredictionResult({ predictionResult } : { predictionResult: string }) {
   return (
     <>
-      <div className="mx-auto my-6 max-w-lg">
-        <Card>
-          <CardHeader>
-            <CardTitle>AutoForm Example</CardTitle>
-            <CardDescription>
-              Automatically generate a form from a Zod schema.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <AutoForm
-              formSchema={formSchema}
-              onSubmit={console.log}
-              fieldConfig={{
-                password: {
-                  inputProps: {
-                    type: "password",
-                    placeholder: "••••••••",
-                  },
-                },
-                favouriteNumber: {
-                  description: "Your favourite number between 1 and 10.",
-                },
-                acceptTerms: {
-                  inputProps: {
-                    required: true,
-                  },
-                  description: (
-                    <>
-                      I agree to the{" "}
-                      <button
-                        className="text-primary underline"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert("Terms and conditions clicked.");
-                        }}
-                      >
-                        terms and conditions
-                      </button>
-                      .
-                    </>
-                  ),
-                },
-
-                birthday: {
-                  description: "We need your birthday to send you a gift.",
-                },
-
-                sendMeMails: {
-                  fieldType: "switch",
-                },
-
-                bio: {
-                  fieldType: "textarea",
-                },
-
-                marshmallows: {
-                  fieldType: "radio",
-                },
-
-                customParent: {
-                  renderParent: ({ children }) => (
-                    <div className="flex items-end gap-3">
-                      <div className="flex-1">{children}</div>
-                      <div>
-                        <Button type="button">Check</Button>
-                      </div>
-                    </div>
-                  ),
-                },
-              }}
-            >
-              <AutoFormSubmit>Send now</AutoFormSubmit>
-            </AutoForm>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+      <CardDescription>
+        The predicted units of electricity for the next month are:
+      </CardDescription>
+      <p>{predictionResult}</p>
+      </>
   );
 }
 
-export default Basics;
+function CombinedForm() {
+  const [step, setStep] = useState(1);
+  const [basicFormValues, setBasicFormValues] = useState({});
+  const [arrayFormValues, setArrayFormValues] = useState({});
+  const [predictionResult, setPredictionResult] = useState(null);
+
+  const handleSubmit = async () => {
+    const combinedFormValues = { ...basicFormValues, ...arrayFormValues };
+    console.log("Combined Form Values:", combinedFormValues);
+
+    try {
+      const response = await fetch(API_URL + "/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(combinedFormValues),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      setPredictionResult(data.predictedUnits);
+      setStep(3);
+    } catch (error) {
+      console.error("There was an error:", error);
+    }
+  };
+
+  return (
+    <div className="mx-auto my-6 max-w-lg">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {step === 3 ? "Result" : step === 1 ? "Basic Information" : "Room Information"}
+          </CardTitle>
+          <CardDescription>
+            {step === 1
+              ? "At Bill-E, we are committed to developing a groundbreaking mobile application to revolutionize the way Pakistan consumes and manages electricity. Your input is invaluable to us in shaping this transformative solution. By participating in this survey, you are contributing to a more sustainable, cost-effective, and efficient energy future for Pakistan. We're interested in understanding your electricity consumption patterns and needs better, so we can tailor our application to your unique circumstances. Your data will be treated with the utmost privacy and security. Please take a moment to share your insights on your current electricity usage, preferences, and any specific challenges you face. Your participation not only helps us build a user-friendly and effective application but also contributes to responsible energy usage in Pakistan. Let's work together to reduce electricity bills and promote sustainable practices. Thank you for being a part of this innovative journey with Bill-E."
+              : step === 2
+              ? "Please fill in the following information"
+              : "Here is the result of your prediction"}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          {step === 3 && predictionResult && (
+            <PredictionResult predictionResult={predictionResult} />
+          )}
+
+          {step === 1 && (
+            <AutoForm
+              formSchema={basicFormSchema}
+              values={basicFormValues}
+              onValuesChange={setBasicFormValues}
+              onSubmit={() => setStep(2)}
+              fieldConfig={{
+                unit: {
+                  fieldType: "radio",
+                },
+              }}
+            >
+              <AutoFormSubmit>Next</AutoFormSubmit>
+            </AutoForm>
+          )}
+
+          {step === 2 && (
+            <AutoForm
+              formSchema={arrayFormSchema}
+              values={arrayFormValues}
+              onValuesChange={setArrayFormValues}
+              onSubmit={handleSubmit}
+              fieldConfig={{
+                rooms: {
+                  hours: {
+                    fieldType: "radio",
+                  },
+                },
+              }}
+            >
+              <AutoFormSubmit>Submit</AutoFormSubmit>
+            </AutoForm>
+          )}
+
+          {step === 2 && (
+            <Button onClick={() => setStep(1)} className="mt-4">
+              Back
+            </Button>
+          )}
+
+          {step !== 3 && (
+            <Json
+              data={
+                step === 1 ? basicFormValues : { ...basicFormValues, ...arrayFormValues }
+              }
+              className="mt-6"
+            />
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default CombinedForm;
