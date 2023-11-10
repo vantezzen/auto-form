@@ -50,7 +50,7 @@ const basicFormSchema = z.object({
     .max(2000, {
       message: "Please enter a number less than 2000",
     })
-    .describe("How many units of electricity did you consume in November?"),
+    .describe("How many units of electricity did you consume in September?"),
   augBill: z.coerce
     .number({
       invalid_type_error: "Kindly enter a number.",
@@ -97,7 +97,11 @@ const arrayFormSchema = z.object({
         ),
       }),
     )
-    .describe("Rooms in your house"),
+    .length(1, {
+      message: "Please add at least one room"})
+    .nonempty({ message: "Please add at least one room"})
+    .describe("Rooms in your house")
+,
     fans: z
     .coerce.number({
       invalid_type_error: "Kindly enter a number.",
