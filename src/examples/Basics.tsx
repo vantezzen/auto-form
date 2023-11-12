@@ -93,7 +93,8 @@ const arrayFormSchema = z.object({
             hours: z
               .enum(["0-2", "2-4", "4-6", "6-8", "8-16", "16-24"])
               .describe("Daily Usage in Hours"),
-          }),
+          })
+          ,
         ),
       }),
     )
@@ -101,6 +102,8 @@ const arrayFormSchema = z.object({
       message: "Please add at least one room"})
     .nonempty({ message: "Please add at least one room"})
     .describe("Rooms in your house")
+    
+    // .describe("It is essential to Add atelast one room with atleast one Appliaance")
 ,
     fans: z
     .coerce.number({
@@ -173,7 +176,7 @@ function CombinedForm() {
             {step === 1
               ? "At Bill-E, we are committed to developing a groundbreaking mobile application to revolutionize the way Pakistan consumes and manages electricity. Your input is invaluable to us in shaping this transformative solution. By participating in this survey, you are contributing to a more sustainable, cost-effective, and efficient energy future for Pakistan. We're interested in understanding your electricity consumption patterns and needs better, so we can tailor our application to your unique circumstances. Your data will be treated with the utmost privacy and security. Please take a moment to share your insights on your current electricity usage, preferences, and any specific challenges you face. Your participation not only helps us build a user-friendly and effective application but also contributes to responsible energy usage in Pakistan. Let's work together to reduce electricity bills and promote sustainable practices. Thank you for being a part of this innovative journey with Bill-E."
               : step === 2
-              ? "Please fill in the following information"
+              ? "Please fill in the following information. It is nessesary to add atleast one room with atleast one appliaance."
               : "Here is the result of your prediction"}
           </CardDescription>
         </CardHeader>
