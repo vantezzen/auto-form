@@ -70,6 +70,7 @@ export default function AutoFormObject<
               name={name}
               item={item as unknown as z.ZodArray<any>}
               form={form}
+              fieldConfig={fieldConfig?.[name] ?? {}}
               path={[...path, name]}
             />
           );
