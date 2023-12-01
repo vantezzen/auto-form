@@ -128,7 +128,9 @@ export function zodToHtmlInputProps(
 
   const typedSchema = schema as z.ZodNumber | z.ZodString;
 
-  if (!("checks" in typedSchema._def)) return {};
+  if (!("checks" in typedSchema._def)) return {
+    required: true
+  };
 
   const { checks } = typedSchema._def;
   const inputProps: React.InputHTMLAttributes<HTMLInputElement> = {
