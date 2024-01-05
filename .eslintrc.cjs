@@ -30,5 +30,6 @@ module.exports = {
     "unused-imports/no-unused-imports": "error",
     "tailwindcss/no-custom-classname": "off",
     "tailwindcss/classnames-order": "error",
+    "jsx-a11y/heading-has-content": "off",
   },
 };

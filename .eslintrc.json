@@ -1,0 +1,6 @@
+{
+  "extends": ["eslint:recommended", "next"],
+  "rules": {
+    "jsx-a11y/heading-has-content": "off"
+  }
+}

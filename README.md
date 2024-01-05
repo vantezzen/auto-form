@@ -1,8 +1,17 @@
 # &lt;AutoForm /&gt; for @shadcn/ui
 
+Fork from https://github.com/vantezzen/auto-form
+
+What changed?
+- Changed to Next JS
+- An JSON/YAML Zod Editor
+- **Dependencies between field**
+- Stepper
+- Description is now toolip
+
 AutoForm is a React component that automatically creates a @shadcn/ui form based on a zod schema.
 
-A live demo can be found at <https://vantezzen.github.io/auto-form/>.
+A live demo can be found at <https://auto-form.vercel.app/>.
 
 ![AutoForm demo](./demo.png)
 
@@ -25,11 +34,12 @@ The component depends on the following components from shadcn/ui:
 - switch
 - textarea
 - toggle
+- tooltip
 
 You can install them all at once with:
 
 ```bash
-npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea toggle
+npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea toggle tooltip
 ```
 
 To install the component itself, copy the `auto-form` folder and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
@@ -47,6 +57,138 @@ Currently, these field types are supported out of the box:
 - string (input, textfield)
 
 You can add support for other field types by adding them to the `INPUT_COMPONENTS` object in `auto-form/config.tsx`.
+
+
+## Stepper Wrapper and Dependecies
+
+an example yaml configuration:
+```yaml
+steps:
+  - label: Personal Information
+    stepIcon: User
+    formSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        age:
+          type: number
+        newsletterSubscription:
+          type: boolean
+          default: false
+    fieldConfig:
+      firstName:
+        description: First Name
+        inputProps:
+          required: true
+      lastName:
+        description: Last Name
+        inputProps:
+          required: true
+      age:
+        description: Age
+        inputProps:
+          required: true
+      newsletterSubscription:
+        description: Subscribe to newsletter?
+        fieldType: switch
+  - label: Employment Details
+    stepIcon: Briefcase
+    formSchema:
+      type: object
+      properties:
+        employmentStatus:
+          type: string
+          enum:
+            - Employed
+            - Unemployed
+            - Student
+        companyName:
+          type: string
+        industry:
+          type: string
+          enum:
+            - Tech
+            - Education
+            - Healthcare
+            - Other
+    dependencies:
+      companyName:
+        field: employmentStatus
+        type: required
+        condition:
+          value: Employed
+      industry:
+        field: employmentStatus
+        type: hidden
+        condition:
+          value: Student
+    fieldConfig:
+      employmentStatus:
+        description: Employment Status
+        inputProps:
+          required: true
+        fieldType: select
+      companyName:
+        description: Company Name
+        inputProps:
+          required: false
+      industry:
+        description: Industry
+        fieldType: select
+  - label: Preferences and Interests
+    stepIcon: Heart
+    formSchema:
+      type: object
+      required:
+        - hobbies
+      properties:
+        hobbies:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+        preferredContactMethod:
+          type: string
+          enum:
+            - Email
+            - Phone
+            - Mail
+        contactDetails:
+          enum:
+            - Personal Email
+            - Work Email
+    dependencies:
+      contactDetails:
+        field: preferredContactMethod
+        type: hidden
+        condition:
+          value: Phone
+    fieldConfig:
+      hobbies:
+        description: Hobbies
+      preferredContactMethod:
+        description: Preferred Contact Method
+        fieldType: select
+      contactDetails:
+        description: Contact Details
+
+```
+
+### Dependencies
+
+Currently the following dependencies are exists:
+
+- setOptions
+- hidden
+- disabled
+- required
+
+**Note: A field can have only one dependency.**
 
 ## Usage
 
@@ -170,7 +312,7 @@ function App() {
         },
       }}
     >
-      {/* 
+      {/*
       Pass in a AutoFormSubmit or a button with type="submit".
       Alternatively, you can not pass a submit button
       to create auto-saving forms etc.
