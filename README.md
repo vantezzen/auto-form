@@ -178,6 +178,17 @@ function App() {
           fieldType: "switch",
         },
       }}
+      // Optionally, define dependencies between fields
+      dependencies={[
+        {
+          // Hide "color" when "sendMeMails" is not checked as we only need to
+          // know the color when we send mails
+          sourceField: "sendMeMails",
+          type: DependencyType.HIDES,
+          targetField: "color",
+          when: (sendMeMails) => !sendMeMails,
+        },
+      ]}
     >
       {/* 
       Pass in a AutoFormSubmit or a button with type="submit".
