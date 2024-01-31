@@ -1,5 +1,7 @@
-import { FormControl, FormDescription, FormItem, FormLabel } from "../../form";
-import { Switch } from "../../switch";
+import { FormControl, FormItem } from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+import AutoFormLabel from "../common/label";
+import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 
 export default function AutoFormSwitch({
@@ -10,23 +12,20 @@ export default function AutoFormSwitch({
   fieldProps,
 }: AutoFormInputComponentProps) {
   return (
-    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-      <FormControl>
-        <Switch
-          checked={field.value}
-          onCheckedChange={field.onChange}
-          {...fieldProps}
-        />
-      </FormControl>
-      <div className="space-y-1 leading-none">
-        <FormLabel>
-          {label}
-          {isRequired && <span className="text-destructive"> *</span>}
-        </FormLabel>
-        {fieldConfigItem.description && (
-          <FormDescription>{fieldConfigItem.description}</FormDescription>
-        )}
-      </div>
-    </FormItem>
+    <div className="flex flex-row  items-center space-x-2">
+      <FormItem className="flex w-full flex-row items-center justify-start">
+        <AutoFormLabel label={label} isRequired={isRequired} />
+        <div className="flex h-10 w-full flex-row items-center space-x-1 ">
+          <FormControl>
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              {...fieldProps}
+            />
+          </FormControl>
+        </div>
+      </FormItem>
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
+    </div>
   );
 }

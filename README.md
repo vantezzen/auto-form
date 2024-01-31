@@ -24,12 +24,13 @@ The component depends on the following components from shadcn/ui:
 - separator
 - switch
 - textarea
+- tooltip
 - toggle
 
 You can install them all at once with:
 
 ```bash
-npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea toggle
+npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea tooltip toggle
 ```
 
 To install the component itself, copy the `auto-form` folder and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
@@ -340,7 +341,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
@@ -570,6 +571,49 @@ All children passed to the `AutoForm` component will be rendered below the form.
   </p>
 </AutoForm>
 ```
+
+### Dependencies
+
+AutoForm allows you to add dependencies between fields to control fields based on the value of other fields. For this, a `dependencies` array can be passed to the `AutoForm` component.
+
+```tsx
+<AutoForm
+  dependencies={[
+    {
+      // "age" hides "parentsAllowed" when the age is 18 or older
+      sourceField: "age",
+      type: DependencyType.HIDES,
+      targetField: "parentsAllowed",
+      when: (age) => age >= 18,
+    },
+    {
+      // "vegetarian" checkbox hides the "Beef Wellington" option from "mealOptions"
+      // if its not already selected
+      sourceField: "vegetarian",
+      type: DependencyType.SETS_OPTIONS,
+      targetField: "mealOptions",
+      when: (vegetarian, mealOption) =>
+        vegetarian && mealOption !== "Beef Wellington",
+      options: ["Pasta", "Salad"],
+    },
+  ]}
+/>
+```
+
+The following dependency types are supported:
+
+- `DependencyType.HIDES`: Hides the target field when the `when` function returns true
+- `DependencyType.DISABLES`: Disables the target field when the `when` function returns true
+- `DependencyType.REQUIRES`: Sets the target field to required when the `when` function returns true
+- `DependencyType.SETS_OPTIONS`: Sets the options of the target field to the `options` array when the `when` function returns true
+
+The `when` function is called with the value of the source field and the value of the target field and should return a boolean to indicate if the dependency should be applied.
+
+Please note that dependencies will not cause the inverse action when returning `false` - for example, if you mark a field as required in your zod schema (i.e. by not explicitly setting `optional`), returning `false` in your `REQURIES` dependency will not mark it as option. You should instead use zod's `optional` method to mark as optional by default and use the `REQURIES` dependency to mark it as required when the dependency is met.
+
+Please note that dependencies do not have any effect on the validation of the form. You should use zod's `refine` method to validate the form based on the value of other fields.
+
+You can create multiple dependencies for the same field and dependency type - for example to hide a field based on multiple other fields. This will then hide the field when any of the dependencies are met.
 
 # Contributing
 

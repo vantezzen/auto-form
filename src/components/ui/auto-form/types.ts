@@ -23,6 +23,43 @@ export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
     : FieldConfigItem;
 };
 
+export enum DependencyType {
+  DISABLES,
+  REQUIRES,
+  HIDES,
+  SETS_OPTIONS,
+}
+
+type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
+  sourceField: keyof SchemaType;
+  type: DependencyType;
+  targetField: keyof SchemaType;
+  when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
+};
+
+export type ValueDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
+  BaseDependency<SchemaType> & {
+    type:
+      | DependencyType.DISABLES
+      | DependencyType.REQUIRES
+      | DependencyType.HIDES;
+  };
+
+export type EnumValues = readonly [string, ...string[]];
+
+export type OptionsDependency<
+  SchemaType extends z.infer<z.ZodObject<any, any>>,
+> = BaseDependency<SchemaType> & {
+  type: DependencyType.SETS_OPTIONS;
+
+  // Partial array of values from sourceField that will trigger the dependency
+  options: EnumValues;
+};
+
+export type Dependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
+  | ValueDependency<SchemaType>
+  | OptionsDependency<SchemaType>;
+
 /**
  * A FormInput component can handle a specific Zod type (e.g. "ZodBoolean")
  */
@@ -34,4 +71,5 @@ export type AutoFormInputComponentProps = {
   isRequired: boolean;
   fieldProps: any;
   zodItem: z.ZodAny;
+  className?: string;
 };

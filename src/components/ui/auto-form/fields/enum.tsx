@@ -1,20 +1,16 @@
-import {
-  FormControl,
-  FormDescription,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../form";
+import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../select";
+} from "@/components/ui/select";
+import * as z from "zod";
+import AutoFormLabel from "../common/label";
+import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 import { getBaseSchema } from "../utils";
-import * as z from "zod";
 
 export default function AutoFormEnum({
   label,
@@ -22,6 +18,7 @@ export default function AutoFormEnum({
   field,
   fieldConfigItem,
   zodItem,
+  fieldProps,
 }: AutoFormInputComponentProps) {
   const baseValues = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)._def
     .values;
@@ -38,18 +35,16 @@ export default function AutoFormEnum({
   }
 
   return (
-    <FormItem>
-      <FormLabel>
-        {label}
-        {isRequired && <span className="text-destructive"> *</span>}
-      </FormLabel>
+    <FormItem className="flex w-full flex-row items-center justify-start space-x-2">
+      <AutoFormLabel label={label} isRequired={isRequired} />
       <FormControl>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <SelectTrigger>
-            <SelectValue
-              className="w-full"
-              placeholder={fieldConfigItem.inputProps?.placeholder}
-            >
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+          {...fieldProps}
+        >
+          <SelectTrigger className={fieldProps.className}>
+            <SelectValue placeholder={fieldConfigItem.inputProps?.placeholder}>
               {field.value ? findItem(field.value)?.[1] : "Select an option"}
             </SelectValue>
           </SelectTrigger>
@@ -62,9 +57,7 @@ export default function AutoFormEnum({
           </SelectContent>
         </Select>
       </FormControl>
-      {fieldConfigItem.description && (
-        <FormDescription>{fieldConfigItem.description}</FormDescription>
-      )}
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
       <FormMessage />
     </FormItem>
   );

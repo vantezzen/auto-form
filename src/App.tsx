@@ -3,6 +3,7 @@ import Array from "./examples/Array";
 import Basics from "./examples/Basics";
 import ConfirmPassword from "./examples/ConfirmPassword";
 import Controlled from "./examples/Controlled";
+import Dependencies from "./examples/Dependencies";
 import InputWithoutLabel from "./examples/InputWithoutLabel";
 import SubObject from "./examples/SubObject";
 
@@ -17,6 +18,7 @@ function App() {
         <ConfirmPassword />
         <Api />
         <Array />
+        <Dependencies />
       </div>
     </>
   );

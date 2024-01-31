@@ -1,5 +1,7 @@
-import { Checkbox } from "../../checkbox";
-import { FormControl, FormDescription, FormItem, FormLabel } from "../../form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
 
 export default function AutoFormCheckbox({
@@ -8,25 +10,28 @@ export default function AutoFormCheckbox({
   field,
   fieldConfigItem,
   fieldProps,
+  className,
 }: AutoFormInputComponentProps) {
   return (
-    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-      <FormControl>
-        <Checkbox
-          checked={field.value}
-          onCheckedChange={field.onChange}
-          {...fieldProps}
-        />
-      </FormControl>
-      <div className="space-y-1 leading-none">
-        <FormLabel>
+    <div className="flex flex-row items-center space-x-2">
+      <FormItem className="flex w-full flex-row items-center justify-start">
+        <FormLabel className="mt-3 w-[117px]">
           {label}
           {isRequired && <span className="text-destructive"> *</span>}
         </FormLabel>
-        {fieldConfigItem.description && (
-          <FormDescription>{fieldConfigItem.description}</FormDescription>
-        )}
-      </div>
-    </FormItem>
+        <FormControl>
+          <Checkbox
+            className={cn(
+              "data-[state=checked]:bg-zinc-500 data-[state=checked]:text-white",
+              className,
+            )}
+            checked={field.value}
+            onCheckedChange={field.onChange}
+            {...fieldProps}
+          />
+        </FormControl>
+      </FormItem>
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
+    </div>
   );
 }
