@@ -6,6 +6,14 @@ A live demo can be found at <https://vantezzen.github.io/auto-form/>.
 
 ![AutoForm demo](./demo.png)
 
+## When to use AutoForm?
+
+AutoForm is mostly meant as a drop-in form builder for your internal and low-priority forms with existing zod schemas. For example, if you already have zod schemas for your API and want to create a simple admin panel to edit user profiles, simply pass the schema to AutoForm and you're done.
+
+As forms almost always grow more complex, AutoForm gives you options to customize how forms are rendered (e.g. using the `fieldConfig` options and dependency support) and gives you escape hatches to customize the form even further (e.g. rendering custom parents and adding custom field types).
+
+However, AutoForm does not aim to be a full-featured form builder. It does not aim to support every edge case in your zod schema or allow building complex, multi-page forms. If you need more customization, feel free to customize AutoForm's renderer in your project or use more powerful form builders like [Formik](https://formik.org/) - though those require more specialized configuration instead of simple drop-in support for your zod schema. For an example on how AutoForm can be extended for more powerful, YAML-based, multi-page forms, see [AutoForm YAML](https://github.com/roeyazroel/auto-form).
+
 ## Installation
 
 The component depends on the following components from shadcn/ui:

@@ -7,7 +7,7 @@ export default function resolveDependencies<
 >(
   dependencies: Dependency<SchemaType>[],
   currentFieldName: keyof SchemaType,
-  watch: UseFormWatch<FieldValues>
+  watch: UseFormWatch<FieldValues>,
 ) {
   let isDisabled = false;
   let isHidden = false;
@@ -17,7 +17,7 @@ export default function resolveDependencies<
   const currentFieldValue = watch(currentFieldName as string);
 
   const currentFieldDependencies = dependencies.filter(
-    (dependency) => dependency.targetField === currentFieldName
+    (dependency) => dependency.targetField === currentFieldName,
   );
   for (const dependency of currentFieldDependencies) {
     const watchedValue = watch(dependency.sourceField as string);
