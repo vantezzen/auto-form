@@ -10,6 +10,8 @@ A live demo can be found at <https://vantezzen.github.io/auto-form/>.
 
 AutoForm is mostly meant as a drop-in form builder for your internal and low-priority forms with existing zod schemas. For example, if you already have zod schemas for your API and want to create a simple admin panel to edit user profiles, simply pass the schema to AutoForm and you're done.
 
+AutoForm uses @shadcn/ui components as natively as possible with only minimal class overrides. This way, if you have customized your @shadcn/ui components in your project, AutoForm should not interfere with your customizations.
+
 As forms almost always grow more complex, AutoForm gives you options to customize how forms are rendered (e.g. using the `fieldConfig` options and dependency support) and gives you escape hatches to customize the form even further (e.g. rendering custom parents and adding custom field types).
 
 However, AutoForm does not aim to be a full-featured form builder. It does not aim to support every edge case in your zod schema or allow building complex, multi-page forms. If you need more customization, feel free to customize AutoForm's renderer in your project or use more powerful form builders like [Formik](https://formik.org/) - though those require more specialized configuration instead of simple drop-in support for your zod schema. For an example on how AutoForm can be extended for more powerful, YAML-based, multi-page forms, see [AutoForm YAML](https://github.com/roeyazroel/auto-form).
@@ -360,7 +362,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
@@ -628,7 +630,7 @@ The following dependency types are supported:
 
 The `when` function is called with the value of the source field and the value of the target field and should return a boolean to indicate if the dependency should be applied.
 
-Please note that dependencies will not cause the inverse action when returning `false` - for example, if you mark a field as required in your zod schema (i.e. by not explicitly setting `optional`), returning `false` in your `REQURIES` dependency will not mark it as option. You should instead use zod's `optional` method to mark as optional by default and use the `REQURIES` dependency to mark it as required when the dependency is met.
+Please note that dependencies will not cause the inverse action when returning `false` - for example, if you mark a field as required in your zod schema (i.e. by not explicitly setting `optional`), returning `false` in your `REQURIES` dependency will not mark it as optional. You should instead use zod's `optional` method to mark as optional by default and use the `REQURIES` dependency to mark it as required when the dependency is met.
 
 Please note that dependencies do not have any effect on the validation of the form. You should use zod's `refine` method to validate the form based on the value of other fields.
 
