@@ -81,6 +81,8 @@ const formSchema = z.object({
     .optional(),
 
   customParent: z.string().optional(),
+
+  file: z.string().optional().describe("Text file"),
 });
 
 function Basics() {
@@ -155,6 +157,10 @@ function Basics() {
                       </div>
                     </div>
                   ),
+                },
+
+                file: {
+                  fieldType: "file",
                 },
               }}
             >

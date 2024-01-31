@@ -16,7 +16,7 @@ export default function AutoFormInput({
 
   return (
     <div className="flex flex-row  items-center space-x-2">
-      <FormItem className="flex w-full flex-row items-center justify-start space-x-2">
+      <FormItem className="flex w-full flex-col justify-start">
         {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
         <FormControl>
           <Input type={type} {...fieldPropsWithoutShowLabel} />

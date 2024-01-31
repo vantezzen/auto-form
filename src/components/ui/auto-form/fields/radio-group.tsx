@@ -30,20 +30,19 @@ export default function AutoFormRadioGroup({
   }
 
   return (
-    <div className="flex flex-row items-center space-x-2">
-      <FormItem className="flex w-full flex-row items-center justify-start">
+    <div>
+      <FormItem>
         <AutoFormLabel label={label} isRequired={isRequired} />
         <FormControl>
           <RadioGroup
             onValueChange={field.onChange}
             defaultValue={field.value}
-            className="flex h-10 w-full flex-row items-center space-x-1 rounded-md border p-2 text-black focus-visible:ring-0 focus-visible:ring-offset-0"
             {...fieldProps}
           >
             {values?.map((value: any) => (
               <FormItem
-                className="flex items-center space-x-3 space-y-0"
                 key={value}
+                className="mb-2 flex items-center gap-3 space-y-0"
               >
                 <FormControl>
                   <RadioGroupItem value={value} />

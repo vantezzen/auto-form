@@ -35,30 +35,28 @@ export default function AutoFormFile({
   };
 
   return (
-    <div className="flex flex-row  items-center space-x-2">
-      <FormItem className="flex w-full flex-row items-center justify-start space-x-2 ">
-        {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
-        {!file && (
-          <FormControl>
-            <Input
-              type="file"
-              {...fieldPropsWithoutShowLabel}
-              onChange={handleFileChange}
-              value={""}
-            />
-          </FormControl>
-        )}
-        {file && (
-          <div className="flex h-[40px] w-full flex-row items-center justify-between space-x-2 rounded-sm border-0 bg-zinc-300/50 p-2 text-black focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-white dark:text-black dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0">
-            <p>{fileName}</p>
-            <button onClick={handleRemoveClick} aria-label="Remove image">
-              <Trash2 className="size-4" />
-            </button>
-          </div>
-        )}
-        <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
-        <FormMessage />
-      </FormItem>
-    </div>
+    <FormItem>
+      {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
+      {!file && (
+        <FormControl>
+          <Input
+            type="file"
+            {...fieldPropsWithoutShowLabel}
+            onChange={handleFileChange}
+            value={""}
+          />
+        </FormControl>
+      )}
+      {file && (
+        <div className="flex h-[40px] w-full flex-row items-center justify-between space-x-2 rounded-sm border p-2 text-black focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-white dark:text-black dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0">
+          <p>{fileName}</p>
+          <button onClick={handleRemoveClick} aria-label="Remove image">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )}
+      <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
+      <FormMessage />
+    </FormItem>
   );
 }

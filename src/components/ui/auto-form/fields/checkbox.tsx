@@ -1,8 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { FormControl, FormItem } from "@/components/ui/form";
 import AutoFormTooltip from "../common/tooltip";
 import { AutoFormInputComponentProps } from "../types";
+import AutoFormLabel from "../common/label";
 
 export default function AutoFormCheckbox({
   label,
@@ -13,23 +13,18 @@ export default function AutoFormCheckbox({
   className,
 }: AutoFormInputComponentProps) {
   return (
-    <div className="flex flex-row items-center space-x-2">
-      <FormItem className="flex w-full flex-row items-center justify-start">
-        <FormLabel className="mt-3 w-[117px]">
-          {label}
-          {isRequired && <span className="text-destructive"> *</span>}
-        </FormLabel>
-        <FormControl>
-          <Checkbox
-            className={cn(
-              "data-[state=checked]:bg-zinc-500 data-[state=checked]:text-white",
-              className,
-            )}
-            checked={field.value}
-            onCheckedChange={field.onChange}
-            {...fieldProps}
-          />
-        </FormControl>
+    <div>
+      <FormItem>
+        <div className="mb-3 flex items-center gap-3">
+          <FormControl>
+            <Checkbox
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              {...fieldProps}
+            />
+          </FormControl>
+          <AutoFormLabel label={label} isRequired={isRequired} />
+        </div>
       </FormItem>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
     </div>
