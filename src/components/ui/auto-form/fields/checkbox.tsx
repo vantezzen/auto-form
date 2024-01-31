@@ -10,7 +10,6 @@ export default function AutoFormCheckbox({
   field,
   fieldConfigItem,
   fieldProps,
-  className,
 }: AutoFormInputComponentProps) {
   return (
     <div>
