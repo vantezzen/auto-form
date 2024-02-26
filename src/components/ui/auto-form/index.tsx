@@ -68,20 +68,24 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     }
   }
 
+  const values = form.watch()
+  // valuesString is needed because form.watch() returns a new object every time
+  const valuesString = JSON.stringify(values)
+
+  React.useEffect(() => {
+    onValuesChangeProp?.(values)
+    const parsedValues = formSchema.safeParse(values)
+    if (parsedValues.success) {
+      onParsedValuesChange?.(parsedValues.data)
+    }
+  }, [valuesString])
+
   return (
     <div className="w-full">
       <Form {...form}>
         <form
           onSubmit={(e) => {
             form.handleSubmit(onSubmit)(e);
-          }}
-          onChange={() => {
-            const values = form.getValues();
-            onValuesChangeProp?.(values);
-            const parsedValues = formSchema.safeParse(values);
-            if (parsedValues.success) {
-              onParsedValuesChange?.(parsedValues.data);
-            }
           }}
           className={cn("space-y-5", className)}
         >
