@@ -151,7 +151,7 @@ export default function AutoFormObject<
                 ...zodToHtmlInputProps(item),
                 ...field,
                 ...fieldConfigItem.inputProps,
-                disabled: isDisabled,
+                disabled: fieldConfigItem.inputProps?.disabled || isDisabled,
                 ref: undefined,
                 value: value,
               };
