@@ -77,42 +77,42 @@ export function getDefaultValueInZodStack(schema: z.ZodAny): any {
  */
 export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
   schema: Schema,
-  fieldConfig?: FieldConfig<z.infer<Schema>>
+  fieldConfig?: FieldConfig<z.infer<Schema>>,
 ) {
-  if (!schema) return null
-  const { shape } = schema
-  type DefaultValuesType = DefaultValues<Partial<z.infer<Schema>>>
-  const defaultValues = {} as DefaultValuesType
-  if (!shape) return defaultValues
+  if (!schema) return null;
+  const { shape } = schema;
+  type DefaultValuesType = DefaultValues<Partial<z.infer<Schema>>>;
+  const defaultValues = {} as DefaultValuesType;
+  if (!shape) return defaultValues;
 
   for (const key of Object.keys(shape)) {
-    const item = shape[key] as z.ZodAny
+    const item = shape[key] as z.ZodAny;
 
-    if (getBaseType(item) === 'ZodObject') {
+    if (getBaseType(item) === "ZodObject") {
       const defaultItems = getDefaultValues(
         getBaseSchema(item) as unknown as z.ZodObject<any, any>,
-        fieldConfig?.[key] as FieldConfig<z.infer<Schema>>
-      )
+        fieldConfig?.[key] as FieldConfig<z.infer<Schema>>,
+      );
 
       if (defaultItems !== null) {
         for (const defaultItemKey of Object.keys(defaultItems)) {
-          const pathKey = `${key}.${defaultItemKey}` as keyof DefaultValuesType
-          defaultValues[pathKey] = defaultItems[defaultItemKey]
+          const pathKey = `${key}.${defaultItemKey}` as keyof DefaultValuesType;
+          defaultValues[pathKey] = defaultItems[defaultItemKey];
         }
       }
     } else {
-      let defaultValue = getDefaultValueInZodStack(item)
+      let defaultValue = getDefaultValueInZodStack(item);
       if (!defaultValue && fieldConfig?.[key]?.inputProps) {
         defaultValue = (fieldConfig?.[key]?.inputProps as unknown as any)
-          .defaultValue
+          .defaultValue;
       }
       if (defaultValue !== undefined) {
-        defaultValues[key as keyof DefaultValuesType] = defaultValue
+        defaultValues[key as keyof DefaultValuesType] = defaultValue;
       }
     }
   }
 
-  return defaultValues
+  return defaultValues;
 }
 
 export function getObjectFormSchema(
