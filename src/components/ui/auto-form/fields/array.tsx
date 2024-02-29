@@ -35,7 +35,7 @@ export default function AutoFormArray({
       <AccordionTrigger>{title}</AccordionTrigger>
       <AccordionContent>
         {fields.map((_field, index) => {
-          const key = [...path, index.toString()].join(".");
+          const key = _field.id;
           return (
             <div className="mt-4 flex flex-col" key={`${key}`}>
               <AutoFormObject
