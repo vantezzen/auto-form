@@ -1,3 +1,5 @@
+import Json from "@/components/ui/json";
+import { useState } from "react";
 import * as z from "zod";
 import AutoForm, { AutoFormSubmit } from "../components/ui/auto-form";
 import {
@@ -7,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { useState } from "react";
-import Json from "@/components/ui/json";
 
 const formSchema = z.object({
   guestListName: z.string(),
@@ -17,7 +17,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     .describe("Guests invited to the party"),
 });

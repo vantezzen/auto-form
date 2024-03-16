@@ -1,5 +1,5 @@
-import AutoForm from "../index";
 import { z } from "zod";
+import AutoForm from "../index";
 
 describe("<AutoForm />", () => {
   it("renders fields", () => {
@@ -193,5 +193,33 @@ describe("<AutoForm />", () => {
     );
 
     cy.get("p").contains("Your username here");
+  });
+
+  it("can set default values on array", () => {
+    const formSchema = z.object({
+      arr: z.array(z.object({ name: z.string(), age: z.number() })).default([
+        { name: "Haykal", age: 21 },
+        { name: "John", age: 20 },
+      ]),
+    });
+
+    cy.mount(<AutoForm formSchema={formSchema} />);
+
+    //get button with text Arr
+    cy.get("button").contains("Arr").click();
+    cy.get("input[name='arr.0.name']").should("have.value", "Haykal");
+    cy.get("input[name='arr.0.age']").should("have.value", "21");
+    cy.get("input[name='arr.1.name']").should("have.value", "John");
+    cy.get("input[name='arr.1.age']").should("have.value", "20");
+  });
+
+  it("can set default value of number to 0", () => {
+    const formSchema = z.object({
+      number: z.number().default(0),
+    });
+
+    cy.mount(<AutoForm formSchema={formSchema} />);
+
+    cy.get("input[name='number']").should("have.value", "0");
   });
 });

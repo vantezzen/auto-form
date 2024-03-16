@@ -288,6 +288,8 @@ const formSchema = z.object({
 });
 ```
 
+If you want to set default value of date, convert it to Date first using `new Date(val)`.
+
 #### Sub-objects
 
 You can nest objects to create accordion sections.
@@ -370,6 +372,33 @@ const formSchema = z.object({
 ```
 
 Arrays are not supported as the root element of the form schema.
+
+You also can set default value of an array using .default(), but please makesure the array element has same structure with the schema.
+
+```tsx
+const formSchema = z.object({
+  guestListName: z.string(),
+  invitedGuests: z
+    .array(
+      // Define the fields for each item
+      z.object({
+        name: z.string(),
+        age: z.coerce.number(),
+      })
+    )
+    .describe("Guests invited to the party")
+    .default([
+      {
+        name: "John",
+        age: 24,
+      },
+      {
+        name: "Jane",
+        age: 20,
+      },
+    ]),
+});
+```
 
 ### Field configuration
 
