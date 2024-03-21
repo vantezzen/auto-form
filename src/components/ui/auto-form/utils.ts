@@ -102,7 +102,10 @@ export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
       }
     } else {
       let defaultValue = getDefaultValueInZodStack(item);
-      if (!defaultValue && fieldConfig?.[key]?.inputProps) {
+      if (
+        (defaultValue === null || defaultValue === "") &&
+        fieldConfig?.[key]?.inputProps
+      ) {
         defaultValue = (fieldConfig?.[key]?.inputProps as unknown as any)
           .defaultValue;
       }
