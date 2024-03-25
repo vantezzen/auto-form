@@ -19,12 +19,14 @@ import {
 export function AutoFormSubmit({
   children,
   className,
+  disabled,
 }: {
   children?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
-    <Button type="submit" className={className}>
+    <Button type="submit" disabled={disabled} className={className}>
       {children ?? "Submit"}
     </Button>
   );
