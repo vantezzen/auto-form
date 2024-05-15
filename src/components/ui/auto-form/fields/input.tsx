@@ -13,7 +13,6 @@ export default function AutoFormInput({
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
   const type = fieldProps.type || "text";
-  console.log({ fieldConfigItem, fieldProps });
 
   return (
     <div className="flex flex-row  items-center space-x-2">
