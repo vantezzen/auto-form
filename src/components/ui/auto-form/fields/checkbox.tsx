@@ -22,7 +22,10 @@ export default function AutoFormCheckbox({
               {...fieldProps}
             />
           </FormControl>
-          <AutoFormLabel label={label} isRequired={isRequired} />
+          <AutoFormLabel
+            label={fieldConfigItem?.label || label}
+            isRequired={isRequired}
+          />
         </div>
       </FormItem>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />

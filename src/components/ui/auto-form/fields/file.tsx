@@ -36,7 +36,12 @@ export default function AutoFormFile({
 
   return (
     <FormItem>
-      {showLabel && <AutoFormLabel label={label} isRequired={isRequired} />}
+      {showLabel && (
+        <AutoFormLabel
+          label={fieldConfigItem?.label || label}
+          isRequired={isRequired}
+        />
+      )}
       {!file && (
         <FormControl>
           <Input
