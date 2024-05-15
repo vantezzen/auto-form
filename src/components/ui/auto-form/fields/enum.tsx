@@ -36,7 +36,10 @@ export default function AutoFormEnum({
 
   return (
     <FormItem>
-      <AutoFormLabel label={label} isRequired={isRequired} />
+      <AutoFormLabel
+        label={fieldConfigItem?.label || label}
+        isRequired={isRequired}
+      />
       <FormControl>
         <Select
           onValueChange={field.onChange}

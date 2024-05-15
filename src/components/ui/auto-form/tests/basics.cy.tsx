@@ -38,6 +38,25 @@ describe("<AutoForm />", () => {
     cy.get("label").contains("Some Field Name");
   });
 
+  it("allows setting custom field labels", () => {
+    const formSchema = z.object({
+      someFieldName: z.string(),
+    });
+
+    cy.mount(
+      <AutoForm
+        fieldConfig={{
+          someFieldName: {
+            label: "My field name",
+          },
+        }}
+        formSchema={formSchema}
+      />,
+    );
+
+    cy.get("label").contains("My field name");
+  });
+
   it("allows setting custom field props", () => {
     const formSchema = z.object({
       username: z.string(),

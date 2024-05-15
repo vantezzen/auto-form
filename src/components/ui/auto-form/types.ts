@@ -7,6 +7,7 @@ export type FieldConfigItem = {
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & {
     showLabel?: boolean;
   };
+  label?: string;
   fieldType?:
     | keyof typeof INPUT_COMPONENTS
     | React.FC<AutoFormInputComponentProps>;
