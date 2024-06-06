@@ -17,7 +17,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      })
+      }),
     )
     .describe("Guests invited to the party"),
 });
