@@ -1,7 +1,7 @@
 "use client";
 import { Form } from "@/components/ui/form";
 import React from "react";
-import { DefaultValues, useForm } from "react-hook-form";
+import { DefaultValues, FormState, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,9 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onSubmit?: (values: z.infer<SchemaType>) => void;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
-  children?: React.ReactNode;
+  children?:
+    | React.ReactNode
+    | ((formState: FormState<z.infer<SchemaType>>) => React.ReactNode);
   className?: string;
   dependencies?: Dependency<z.infer<SchemaType>>[];
 }) {
@@ -82,6 +84,11 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     }
   }, [valuesString]);
 
+  const renderChildren =
+    typeof children === "function"
+      ? children(form.formState as FormState<z.infer<SchemaType>>)
+      : children;
+
   return (
     <div className="w-full">
       <Form {...form}>
@@ -98,7 +105,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
             fieldConfig={fieldConfig}
           />
 
-          {children}
+          {renderChildren}
         </form>
       </Form>
     </div>
