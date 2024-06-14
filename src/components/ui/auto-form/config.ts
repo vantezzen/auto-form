@@ -18,6 +18,7 @@ export const INPUT_COMPONENTS = {
   number: AutoFormNumber,
   file: AutoFormFile,
   fallback: AutoFormInput,
+  tags: AutoFormEnum,
 };
 
 /**
