@@ -18,6 +18,20 @@ However, AutoForm does not aim to be a full-featured form builder. It does not a
 
 ## Installation
 
+### Custom registry
+
+If you are using @shadcn/ui 2.0.0 or later, you can install the component directly from the registry. Unfortunately, custom registries currently don't directly support subfolders, so we are using a workaround to install the component.
+
+```bash
+# If your components are in "/components/ui"
+npx shadcn-ui@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form.json
+
+# If your components are in "/src/components/ui"
+npx shadcn-ui@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form-src.json
+```
+
+### Manual installation
+
 The component depends on the following components from shadcn/ui:
 
 - accordion
@@ -364,7 +378,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
@@ -384,7 +398,7 @@ const formSchema = z.object({
       z.object({
         name: z.string(),
         age: z.coerce.number(),
-      }),
+      })
     )
     .describe("Guests invited to the party")
     .default([
