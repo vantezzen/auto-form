@@ -24,10 +24,10 @@ If you are using @shadcn/ui 2.0.0 or later, you can install the component direct
 
 ```bash
 # If your components are in "/components/ui"
-npx shadcn-ui@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form.json
+npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form.json
 
 # If your components are in "/src/components/ui"
-npx shadcn-ui@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form-src.json
+npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form-src.json
 ```
 
 ### Manual installation
@@ -54,7 +54,7 @@ The component depends on the following components from shadcn/ui:
 You can install them all at once with:
 
 ```bash
-npx shadcn-ui@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea tooltip toggle
+npx shadcn@latest add accordion button calendar card checkbox form input label popover radio-group select separator switch textarea tooltip toggle
 ```
 
 To install the component itself, copy the `auto-form` folder and `date-picker.tsx` from `src/components/ui` to your project's ui folder.
