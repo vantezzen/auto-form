@@ -13,6 +13,7 @@ import {
   beautifyObjectName,
   getBaseSchema,
   getBaseType,
+  sortFieldsByOrder,
   zodToHtmlInputProps,
 } from "../utils";
 import AutoFormArray from "./array";
@@ -62,9 +63,11 @@ export default function AutoFormObject<
     return item;
   };
 
+  const sortedFieldKeys = sortFieldsByOrder(fieldConfig, Object.keys(shape));
+
   return (
     <Accordion type="multiple" className="space-y-5 border-none">
-      {Object.keys(shape).map((name) => {
+      {sortedFieldKeys.map((name) => {
         let item = shape[name] as z.ZodAny;
         item = handleIfZodNumber(item) as z.ZodAny;
         const zodBaseType = getBaseType(item);

@@ -17,6 +17,8 @@ export type FieldConfigItem = {
   renderParent?: (props: {
     children: React.ReactNode;
   }) => React.ReactElement | null;
+
+  order?: number;
 };
 
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
