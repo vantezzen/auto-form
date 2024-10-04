@@ -26,7 +26,7 @@ const registry: z.infer<typeof registryEntrySchema> = {
     "tooltip",
     "toggle",
   ],
-  dependencies: [],
+  dependencies: ["zod"],
   devDependencies: [],
   tailwind: {
     config: {},
@@ -53,6 +53,21 @@ for (const file of files) {
   srcRegistry.files!.push({
     path: file.replace("src/components/ui/auto-form/", ""),
     target: file,
+    content,
+    type: "registry:ui",
+  });
+}
+
+const rootFiles = ["date-picker.tsx"];
+for (const file of rootFiles) {
+  const content = await readFile(`./src/components/ui/${file}`, "utf-8");
+  registry.files!.push({
+    path: file,
+    content,
+    type: "registry:ui",
+  });
+  srcRegistry.files!.push({
+    path: file,
     content,
     type: "registry:ui",
   });

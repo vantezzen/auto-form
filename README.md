@@ -23,11 +23,7 @@ However, AutoForm does not aim to be a full-featured form builder. It does not a
 If you are using @shadcn/ui 2.0.0 or later, you can install the component directly from the registry. Unfortunately, custom registries currently don't directly support subfolders, so we are using a workaround to install the component.
 
 ```bash
-# If your components are in "/components/ui"
 npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form.json
-
-# If your components are in "/src/components/ui"
-npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form-src.json
 ```
 
 ### Manual installation
