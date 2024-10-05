@@ -564,6 +564,23 @@ By default, this is a React fragment.
 />
 ```
 
+#### Order
+
+If you want to change the order of fields, use the `order` config. You can pass an arbitrary number where smaller numbers will be displayed first. All fields without a defined `order` use "0" so they appear in the same order they are defined in.
+
+```tsx
+<AutoForm
+  fieldConfig={{
+    username: {
+      order: -1 // Display before all other fields
+    },
+    terms: {
+      order: 1 // Display after all other fields
+    }
+  }}
+/>
+```
+
 ### Accessing the form data
 
 There are two ways to access the form data:
