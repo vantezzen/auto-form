@@ -1,18 +1,21 @@
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  UseFormSetError,
+} from "react-hook-form";
 import * as z from "zod";
 import { INPUT_COMPONENTS } from "./config";
 
 export type FieldConfigItem = {
   description?: React.ReactNode;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> &
-  React.TextareaHTMLAttributes<HTMLTextAreaElement> &
-  {
-    showLabel?: boolean;
-  };
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+      showLabel?: boolean;
+    };
   label?: string;
   fieldType?:
-  | keyof typeof INPUT_COMPONENTS
-  | React.FC<AutoFormInputComponentProps>;
+    | keyof typeof INPUT_COMPONENTS
+    | React.FC<AutoFormInputComponentProps>;
 
   renderParent?: (props: {
     children: React.ReactNode;
@@ -22,8 +25,8 @@ export type FieldConfigItem = {
 export type FieldConfig<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
   // If SchemaType.key is an object, create a nested FieldConfig, otherwise FieldConfigItem
   [Key in keyof SchemaType]?: SchemaType[Key] extends object
-  ? FieldConfig<z.infer<SchemaType[Key]>>
-  : FieldConfigItem;
+    ? FieldConfig<z.infer<SchemaType[Key]>>
+    : FieldConfigItem;
 };
 
 export enum DependencyType {
@@ -43,9 +46,9 @@ type BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
 export type ValueDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
   BaseDependency<SchemaType> & {
     type:
-    | DependencyType.DISABLES
-    | DependencyType.REQUIRES
-    | DependencyType.HIDES;
+      | DependencyType.DISABLES
+      | DependencyType.REQUIRES
+      | DependencyType.HIDES;
   };
 
 export type EnumValues = readonly [string, ...string[]];
@@ -75,4 +78,8 @@ export type AutoFormInputComponentProps = {
   fieldProps: any;
   zodItem: z.ZodAny;
   className?: string;
+};
+
+export type SubmitOptions<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
+  setError: UseFormSetError<SchemaType>;
 };

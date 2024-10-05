@@ -574,9 +574,10 @@ The preferred way is to use the `onSubmit` prop. This will be called when the fo
 
 ```tsx
 <AutoForm
-  onSubmit={(data) => {
+  onSubmit={(data, { setError }) => {
     // Do something with the data
     // Data is validated and coerced with zod automatically
+    // You can use setError to set errors for the fields
   }}
 />
 ```
