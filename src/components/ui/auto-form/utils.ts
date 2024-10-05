@@ -178,3 +178,21 @@ export function zodToHtmlInputProps(
 
   return inputProps;
 }
+
+/**
+ * Sort the fields by order.
+ * If no order is set, the field will be sorted based on the order in the schema.
+ */
+
+export function sortFieldsByOrder<SchemaType extends z.ZodObject<any, any>>(
+  fieldConfig: FieldConfig<z.infer<SchemaType>> | undefined,
+  keys: string[]
+) {
+  const sortedFields = keys.sort((a, b) => {
+    const fieldA: number = (fieldConfig?.[a]?.order as number) ?? 0;
+    const fieldB = (fieldConfig?.[b]?.order as number) ?? 0;
+    return fieldA - fieldB;
+  });
+
+  return sortedFields;
+}
