@@ -20,6 +20,7 @@ const formSchema = z.object({
       }),
     )
     .describe("Guests invited to the party"),
+  type: z.array(z.string()).describe("Type of the party"),
 });
 
 function Array() {
@@ -39,6 +40,13 @@ function Array() {
           <CardContent>
             <AutoForm
               formSchema={formSchema}
+              fieldConfig={
+                {
+                  type: {
+                    fieldType: "tags",
+                  }
+                }
+              }
               values={formValues}
               onValuesChange={setFormValues}
               onSubmit={console.log}

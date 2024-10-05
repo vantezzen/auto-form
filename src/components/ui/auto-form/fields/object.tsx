@@ -18,6 +18,7 @@ import {
 } from "../utils";
 import AutoFormArray from "./array";
 import resolveDependencies from "../dependencies";
+import TagsListInput  from "./tagslist";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
@@ -73,6 +74,7 @@ export default function AutoFormObject<
         const zodBaseType = getBaseType(item);
         const itemName = item._def.description ?? beautifyObjectName(name);
         const key = [...path, name].join(".");
+        const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
 
         const {
           isHidden,
@@ -103,6 +105,18 @@ export default function AutoFormObject<
             </AccordionItem>
           );
         }
+        if (zodBaseType === "ZodArray" && fieldConfigItem?.fieldType === "tags") {
+          return (
+            <TagsListInput
+              key={key}
+              name={name}
+              item={item as unknown as z.ZodArray<any>}
+              form={form}
+              fieldConfig={fieldConfig?.[name] ?? {}}
+              path={[...path, name]}
+            />
+          );
+        };
         if (zodBaseType === "ZodArray") {
           return (
             <AutoFormArray
@@ -116,7 +130,6 @@ export default function AutoFormObject<
           );
         }
 
-        const fieldConfigItem: FieldConfigItem = fieldConfig?.[name] ?? {};
         const zodInputProps = zodToHtmlInputProps(item);
         const isRequired =
           isRequiredByDependency ||
