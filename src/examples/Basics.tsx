@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import { fieldConfig } from "@/components/ui/auto-form/utils";
 
 enum Sports {
   Football = "Football/Soccer",
@@ -24,7 +25,15 @@ const formSchema = z.object({
     })
     .min(2, {
       message: "Username must be at least 2 characters.",
-    }),
+    })
+    .superRefine(
+      fieldConfig({
+        description: "Your unique username.",
+        inputProps: {
+          showLabel: true,
+        },
+      })
+    ),
 
   password: z
     .string({
@@ -33,7 +42,16 @@ const formSchema = z.object({
     .describe("Your secure password")
     .min(8, {
       message: "Password must be at least 8 characters.",
-    }),
+    })
+    .superRefine(
+      fieldConfig({
+        description: "Your secure password.",
+        inputProps: {
+          type: "password",
+          placeholder: "********",
+        },
+      })
+    ),
 
   favouriteNumber: z.coerce
     .number({
@@ -46,7 +64,12 @@ const formSchema = z.object({
       message: "Favourite number must be at most 10.",
     })
     .default(1)
-    .optional(),
+    .optional()
+    .superRefine(
+      fieldConfig({
+        description: "Your favourite number between 1 and 10.",
+      })
+    ),
 
   acceptTerms: z
     .boolean()
@@ -102,15 +125,6 @@ function Basics() {
               formSchema={formSchema}
               onSubmit={console.log}
               fieldConfig={{
-                password: {
-                  inputProps: {
-                    type: "password",
-                    placeholder: "••••••••",
-                  },
-                },
-                favouriteNumber: {
-                  description: "Your favourite number between 1 and 10.",
-                },
                 acceptTerms: {
                   inputProps: {
                     required: true,

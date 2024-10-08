@@ -12,6 +12,7 @@ import AutoFormObject from "./fields/object";
 import { Dependency, FieldConfig, SubmitOptions } from "./types";
 import {
   ZodObjectOrWrapped,
+  extractRefinedFieldConfig,
   getDefaultValues,
   getObjectFormSchema,
 } from "./utils";
@@ -38,7 +39,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   onValuesChange: onValuesChangeProp,
   onParsedValuesChange,
   onSubmit: onSubmitProp,
-  fieldConfig,
+  fieldConfig: baseFieldConfig,
   children,
   className,
   dependencies,
@@ -59,6 +60,11 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   dependencies?: Dependency<z.infer<SchemaType>>[];
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
+  const fieldConfig = extractRefinedFieldConfig(
+    objectFormSchema,
+    baseFieldConfig
+  );
+
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
     getDefaultValues(objectFormSchema, fieldConfig);
 

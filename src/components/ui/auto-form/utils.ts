@@ -1,7 +1,7 @@
 import React from "react";
 import { DefaultValues } from "react-hook-form";
-import { z } from "zod";
-import { FieldConfig } from "./types";
+import { RefinementEffect, z } from "zod";
+import { FieldConfig, FieldConfigItem, SuperRefineFunction } from "./types";
 
 // TODO: This should support recursive ZodEffects but TypeScript doesn't allow circular type definitions.
 export type ZodObjectOrWrapped =
@@ -60,12 +60,12 @@ export function getDefaultValueInZodStack(schema: z.ZodAny): any {
 
   if ("innerType" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      typedSchema._def.innerType as unknown as z.ZodAny,
+      typedSchema._def.innerType as unknown as z.ZodAny
     );
   }
   if ("schema" in typedSchema._def) {
     return getDefaultValueInZodStack(
-      (typedSchema._def as any).schema as z.ZodAny,
+      (typedSchema._def as any).schema as z.ZodAny
     );
   }
 
@@ -77,7 +77,7 @@ export function getDefaultValueInZodStack(schema: z.ZodAny): any {
  */
 export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
   schema: Schema,
-  fieldConfig?: FieldConfig<z.infer<Schema>>,
+  fieldConfig?: FieldConfig<z.infer<Schema>>
 ) {
   if (!schema) return null;
   const { shape } = schema;
@@ -91,7 +91,7 @@ export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
     if (getBaseType(item) === "ZodObject") {
       const defaultItems = getDefaultValues(
         getBaseSchema(item) as unknown as z.ZodObject<any, any>,
-        fieldConfig?.[key] as FieldConfig<z.infer<Schema>>,
+        fieldConfig?.[key] as FieldConfig<z.infer<Schema>>
       );
 
       if (defaultItems !== null) {
@@ -119,7 +119,7 @@ export function getDefaultValues<Schema extends z.ZodObject<any, any>>(
 }
 
 export function getObjectFormSchema(
-  schema: ZodObjectOrWrapped,
+  schema: ZodObjectOrWrapped
 ): z.ZodObject<any, any> {
   if (schema?._def.typeName === "ZodEffects") {
     const typedSchema = schema as z.ZodEffects<z.ZodObject<any, any>>;
@@ -137,7 +137,7 @@ export function zodToHtmlInputProps(
     | z.ZodNumber
     | z.ZodString
     | z.ZodOptional<z.ZodNumber | z.ZodString>
-    | any,
+    | any
 ): React.InputHTMLAttributes<HTMLInputElement> {
   if (["ZodOptional", "ZodNullable"].includes(schema._def.typeName)) {
     const typedSchema = schema as z.ZodOptional<z.ZodNumber | z.ZodString>;
@@ -195,4 +195,88 @@ export function sortFieldsByOrder<SchemaType extends z.ZodObject<any, any>>(
   });
 
   return sortedFields;
+}
+
+export const FIELD_CONFIG_SYMBOL = Symbol("GetFieldConfig");
+
+/**
+ * Create a super-refinement function to store the field config.
+ *
+ * @param config The field configuration.
+ */
+export function fieldConfig(config: FieldConfigItem): SuperRefineFunction {
+  const refinementFunction: SuperRefineFunction = () => {
+    // Do nothing.
+  };
+
+  // @ts-expect-error This is a symbol and not a real value.
+  refinementFunction[FIELD_CONFIG_SYMBOL] = config;
+
+  return refinementFunction;
+}
+
+export function getFieldConfigInZodStack(schema: z.ZodAny): any {
+  const typedSchema = schema as unknown as z.ZodEffects<
+    z.ZodNumber | z.ZodString
+  >;
+
+  if (typedSchema._def.typeName === "ZodEffects") {
+    const effect = typedSchema._def.effect as RefinementEffect<any>;
+    const refinementFunction = effect.refinement;
+
+    if (FIELD_CONFIG_SYMBOL in refinementFunction) {
+      return refinementFunction[FIELD_CONFIG_SYMBOL];
+    }
+  }
+
+  if ("innerType" in typedSchema._def) {
+    return getFieldConfigInZodStack(
+      typedSchema._def.innerType as unknown as z.ZodAny
+    );
+  }
+  if ("schema" in typedSchema._def) {
+    return getFieldConfigInZodStack(
+      (typedSchema._def as any).schema as z.ZodAny
+    );
+  }
+
+  return undefined;
+}
+
+export function extractRefinedFieldConfig<
+  SchemaType extends ZodObjectOrWrapped,
+  Schema extends z.ZodObject<any, any>,
+>(formSchema: Schema, fieldConfig: FieldConfig<SchemaType> = {}) {
+  const baseConfig = fieldConfig;
+
+  if (!formSchema) return baseConfig;
+  const { shape } = formSchema;
+  if (!shape) return baseConfig;
+
+  for (const keyRaw of Object.keys(shape)) {
+    const key = keyRaw as keyof SchemaType;
+    const item = shape[key] as z.ZodAny;
+
+    if (getBaseType(item) === "ZodObject") {
+      const objectConfig = extractRefinedFieldConfig(
+        getBaseSchema(item) as unknown as z.ZodObject<any, any>,
+        fieldConfig?.[key] as FieldConfig<z.infer<Schema>>
+      );
+
+      baseConfig[key] = {
+        ...(baseConfig[key] as any),
+        ...objectConfig,
+      };
+    } else {
+      const fieldConfigItem = getFieldConfigInZodStack(item);
+      if (fieldConfigItem) {
+        baseConfig[key] = {
+          ...baseConfig[key],
+          ...fieldConfigItem,
+        };
+      }
+    }
+  }
+
+  return baseConfig;
 }

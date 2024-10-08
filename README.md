@@ -412,9 +412,22 @@ const formSchema = z.object({
 
 ### Field configuration
 
-As zod doesn't allow adding other properties to the schema, you can use the `fieldConfig` prop to add additional configuration for the UI of each field.
+Your zod schema will be used to automatically create the form but you can additionally use field configurations to customize how your form looks.
+
+To provide the config, you can either extend your schema with `superRefine` or provide the config directly to the `AutoForm` component.
 
 ```tsx
+// Extending the schema
+import { fieldConfig } from "@components/ui/auto-form/utils";
+const formSchema = z.object({
+  username: z.string().superRefine(
+    fieldConfig({
+      // Configuration here
+    })
+  ),
+});
+
+// Directly in the AutoForm component
 <AutoForm
   fieldConfig={{
     // Add config for each field here - don't add the field name to keep all defaults
@@ -422,14 +435,27 @@ As zod doesn't allow adding other properties to the schema, you can use the `fie
       // Configuration here
     },
   }}
-/>
+/>;
 ```
+
+Both configs will be merged so you can use both methods to customize your form. For simplicity, most examples will use the direct method.
 
 #### Input props
 
 You can use the `inputProps` property to pass props to the input component. You can use any props that the HTML component accepts.
 
 ```tsx
+const formSchema = z.object({
+  username: z.string().superRefine(
+    fieldConfig({
+      inputProps: {
+        type: "text",
+        placeholder: "Username",
+      },
+    })
+  ),
+});
+// or
 <AutoForm
   fieldConfig={{
     username: {
@@ -572,11 +598,11 @@ If you want to change the order of fields, use the `order` config. You can pass 
 <AutoForm
   fieldConfig={{
     username: {
-      order: -1 // Display before all other fields
+      order: -1, // Display before all other fields
     },
     terms: {
-      order: 1 // Display after all other fields
-    }
+      order: 1, // Display after all other fields
+    },
   }}
 />
 ```
