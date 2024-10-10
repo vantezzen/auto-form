@@ -9,7 +9,12 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import AutoFormObject from "./fields/object";
-import { Dependency, FieldConfig, SubmitOptions } from "./types";
+import {
+  Dependency,
+  FieldConfig,
+  SubmitOptions,
+  ValueChangeOptions,
+} from "./types";
 import {
   ZodObjectOrWrapped,
   getDefaultValues,
@@ -45,8 +50,14 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 }: {
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
-  onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onValuesChange?: (
+    values: Partial<z.infer<SchemaType>>,
+    options: ValueChangeOptions<z.infer<SchemaType>>
+  ) => void;
+  onParsedValuesChange?: (
+    values: Partial<z.infer<SchemaType>>,
+    options: ValueChangeOptions<z.infer<SchemaType>>
+  ) => void;
   onSubmit?: (
     values: z.infer<SchemaType>,
     options: SubmitOptions<z.infer<SchemaType>>
@@ -79,10 +90,14 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 
   React.useEffect(() => {
     const subscription = form.watch((values) => {
-      onValuesChangeProp?.(values);
+      onValuesChangeProp?.(values, {
+        setError: form.setError,
+      });
       const parsedValues = formSchema.safeParse(values);
       if (parsedValues.success) {
-        onParsedValuesChange?.(parsedValues.data);
+        onParsedValuesChange?.(parsedValues.data, {
+          setError: form.setError,
+        });
       }
     });
 
