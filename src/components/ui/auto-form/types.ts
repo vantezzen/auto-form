@@ -85,3 +85,9 @@ export type AutoFormInputComponentProps = {
 export type SubmitOptions<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
   setError: UseFormSetError<SchemaType>;
 };
+
+export type ValueChangeOptions<
+  SchemaType extends z.infer<z.ZodObject<any, any>>,
+> = {
+  setError: UseFormSetError<SchemaType>;
+};
