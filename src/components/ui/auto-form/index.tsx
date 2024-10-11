@@ -71,7 +71,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   function onSubmit(values: z.infer<typeof formSchema>) {
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
-      onSubmitProp?.(parsedValues.data, {
+      return onSubmitProp?.(parsedValues.data, {
         setError: form.setError,
       });
     }
