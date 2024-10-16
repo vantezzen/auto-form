@@ -23,7 +23,7 @@ However, AutoForm does not aim to be a full-featured form builder. It does not a
 If you are using @shadcn/ui 2.0.0 or later, you can install the component directly from the registry. Unfortunately, custom registries currently don't directly support subfolders, so we are using a workaround to install the component.
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/main/registry/auto-form.json
+npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/auto-form/pure-shadcn/registry/auto-form.json
 ```
 
 ### Manual installation
@@ -572,11 +572,11 @@ If you want to change the order of fields, use the `order` config. You can pass 
 <AutoForm
   fieldConfig={{
     username: {
-      order: -1 // Display before all other fields
+      order: -1, // Display before all other fields
     },
     terms: {
-      order: 1 // Display after all other fields
-    }
+      order: 1, // Display after all other fields
+    },
   }}
 />
 ```
