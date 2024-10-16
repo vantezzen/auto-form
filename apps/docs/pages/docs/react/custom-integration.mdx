@@ -1,0 +1,371 @@
+# Creating custom UI integrations
+
+This guide will walk you through the process of creating a custom UI integration for @autoform/react. By following these steps, you'll be able to use AutoForm with your preferred UI library or custom components.
+
+import { Steps } from "nextra/components";
+
+<Steps>
+## Set up the project
+
+You can create your integration as a custom npm package (e.g. "@autoform/custom-ui") or as part of your existing project. For this guide, we'll create a new npm package.
+
+```bash
+mkdir @autoform-custom-ui
+cd @autoform-custom-ui
+npm init -y
+```
+
+Install the necessary dependencies:
+
+```bash
+npm install @autoform/react @autoform/core react
+```
+
+## Create the main export file
+
+Create a new file called `src/index.tsx` that will export all the necessary components and types:
+
+```tsx
+// src/index.tsx
+export * from "./AutoForm";
+export * from "./types";
+export * from "./utils";
+```
+
+## Define custom types
+
+Create a new file called `src/types.ts`:
+
+```tsx
+// src/types.ts
+import { AutoFormUIComponents, AutoFormFieldComponents } from "@autoform/react";
+
+export interface CustomAutoFormUIComponents extends AutoFormUIComponents {
+  // Add any additional UI components specific to your integration
+  // This could include theme configuration, layout components, etc.
+}
+
+export interface CustomAutoFormFieldComponents extends AutoFormFieldComponents {
+  // Add any additional field components specific to your integration
+}
+```
+
+## Implement UI components
+
+Create a new folder called `src/components` and implement the required UI components. You'll need to create the following components:
+
+1. Form
+2. FieldWrapper
+3. ErrorMessage
+4. SubmitButton
+5. ObjectWrapper
+6. ArrayWrapper
+7. ArrayElementWrapper
+
+You can take a look at existing implementations like "@autoform/mui" for inspiration. Here's an example of how to implement these components with pure HTML:
+
+```tsx
+// src/components/Form.tsx
+import React from "react";
+
+export const Form: React.FC<{
+  onSubmit: (e: React.FormEvent) => void;
+  children: React.ReactNode;
+}> = ({ onSubmit, children }) => {
+  return <form onSubmit={onSubmit}>{children}</form>;
+};
+```
+
+```tsx
+// src/components/FieldWrapper.tsx
+import React from "react";
+import { FieldWrapperProps } from "@autoform/react";
+
+export const FieldWrapper: React.FC<FieldWrapperProps> = ({
+  label,
+  error,
+  children,
+  id,
+  field,
+}) => {
+  return (
+    <div>
+      <label htmlFor={id}>{label}</label>
+      {children}
+      {error && <span>{error}</span>}
+    </div>
+  );
+};
+```
+
+```tsx
+// src/components/ErrorMessage.tsx
+import React from "react";
+
+export const ErrorMessage: React.FC<{ error: string }> = ({ error }) => (
+  <span style={{ color: "red" }}>{error}</span>
+);
+```
+
+```tsx
+// src/components/SubmitButton.tsx
+import React from "react";
+
+export const SubmitButton: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => <button type="submit">{children}</button>;
+```
+
+## Implement field components
+
+In the same `src/components` folder, implement the field components. There is no requirement on which field components you need to implement, but you should cover the basic types like string, number, and date.
+
+Here's an example of how to implement these components:
+
+```tsx
+// src/components/StringField.tsx
+import React from "react";
+import { AutoFormFieldProps } from "@autoform/react";
+
+export const StringField: React.FC<AutoFormFieldProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  id,
+}) => (
+  <input
+    id={id}
+    type="text"
+    value={value || ""}
+    onChange={(e) => onChange(e.target.value)}
+    {...field.fieldConfig?.inputProps}
+  />
+);
+```
+
+```tsx
+// src/components/NumberField.tsx
+import React from "react";
+import { AutoFormFieldProps } from "@autoform/react";
+
+export const NumberField: React.FC<AutoFormFieldProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  id,
+}) => (
+  <input
+    id={id}
+    type="number"
+    value={value || ""}
+    onChange={(e) => onChange(Number(e.target.value))}
+    {...field.fieldConfig?.inputProps}
+  />
+);
+```
+
+```tsx
+// src/components/DateField.tsx
+import React from "react";
+import { AutoFormFieldProps } from "@autoform/react";
+
+export const DateField: React.FC<AutoFormFieldProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  id,
+}) => (
+  <input
+    id={id}
+    type="date"
+    value={value ? new Date(value).toISOString().split("T")[0] : ""}
+    onChange={(e) => onChange(new Date(e.target.value))}
+    {...field.fieldConfig?.inputProps}
+  />
+);
+```
+
+Additionally, you can create custom field components for other types like checkboxes, radio buttons, etc. These can later be used by setting a custom `fieldType` in the schema.
+
+## Create the AutoForm component
+
+Create a new file called `src/AutoForm.tsx`. This will wrap the base `AutoForm` component from `@autoform/react` and provide your custom UI components:
+
+```tsx
+// src/AutoForm.tsx
+import { AutoForm as BaseAutoForm } from "@autoform/react";
+import {
+  CustomAutoFormUIComponents,
+  CustomAutoFormFieldComponents,
+} from "./types";
+import { Form, FieldWrapper, ErrorMessage, SubmitButton } from "./components";
+import { StringField, NumberField, DateField } from "./components";
+
+const uiComponents: CustomAutoFormUIComponents = {
+  Form,
+  FieldWrapper,
+  ErrorMessage,
+  SubmitButton,
+};
+
+const formComponents: CustomAutoFormFieldComponents = {
+  // The key should match the data type (string, number, date, etc.) or a custom field type (e.g. radio)
+  string: StringField,
+  number: NumberField,
+  date: DateField,
+};
+
+export function AutoForm<T extends Record<string, any>>(
+  props: Omit<
+    Parameters<typeof BaseAutoForm>[0],
+    "uiComponents" | "formComponents"
+  >
+) {
+  return (
+    <BaseAutoForm
+      {...props}
+      uiComponents={uiComponents}
+      formComponents={formComponents}
+    />
+  );
+}
+```
+
+## Implement utility functions
+
+To provide type-safety when selecting field types, you should create a custom wrapper for the `fieldConfig` function.
+
+Create a new file called `src/utils.ts`:
+
+```tsx
+// src/utils.ts
+import { FieldConfig } from "@autoform/core";
+import { SuperRefineFunction } from "@autoform/zod";
+import { fieldConfig as baseFieldConfig } from "@autoform/react";
+import { ReactNode } from "react";
+
+type FieldTypes = "string" | "number" | "date" | string;
+
+export function fieldConfig(
+  config: FieldConfig<ReactNode, FieldTypes>
+): SuperRefineFunction {
+  return baseFieldConfig<FieldTypes>(config);
+}
+```
+
+## Add custom field types (optional)
+
+If you want to add custom field types, you can create new components and add them to the `formComponents` object in `src/AutoForm.tsx`. For example:
+
+```tsx
+// src/components/CustomField.tsx
+import React from "react";
+import { AutoFormFieldProps } from "@autoform/react";
+
+export const CustomField: React.FC<AutoFormFieldProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  id,
+}) => (
+  <div>
+    <input
+      id={id}
+      type="text"
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value)}
+    />
+    <button onClick={() => onChange(value + "!")}>Add !</button>
+  </div>
+);
+```
+
+Then, add it to the `formComponents` object in `src/AutoForm.tsx`:
+
+```tsx
+// src/AutoForm.tsx
+// ... other imports
+import { CustomField } from "./components/CustomField";
+
+const formComponents: CustomAutoFormFieldComponents = {
+  // ... other fields
+  custom: CustomField,
+};
+```
+
+## Package and publish (optional)
+
+Update your `package.json` file with the appropriate information and scripts:
+
+```json
+{
+  "name": "@autoform/custom-ui",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "@autoform/react": "^1.0.0",
+    "@autoform/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.0"
+  }
+}
+```
+
+Build your package:
+
+```bash
+npm run build
+```
+
+Now you can publish your package to npm:
+
+```bash
+npm publish
+```
+
+</Steps>
+
+## Using your custom UI integration
+
+To use your custom UI integration in a project, install it alongside @autoform/react or use the integration in your project directly
+
+```bash
+npm install @autoform/react @autoform/custom-ui
+```
+
+Then, in your React component:
+
+```tsx
+import { AutoForm, fieldConfig } from "@autoform/custom-ui";
+import { ZodProvider } from "@autoform/zod";
+
+const mySchema = z.object({
+  // ... your schema definition
+});
+const schemaProvider = new ZodProvider(mySchema);
+
+function MyForm() {
+  return (
+    <AutoForm
+      schema={schemaProvider}
+      onSubmit={(data) => {
+        console.log(data);
+      }}
+      withSubmit
+    />
+  );
+}
+```
+
+By following these steps, you've created a custom UI integration for @autoform/react that can be used with your preferred UI components or library. You can further customize the components and add more field types as needed for your specific use case.

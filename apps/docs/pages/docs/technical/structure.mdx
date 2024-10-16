@@ -1,0 +1,152 @@
+# Library Structure
+
+AutoForm is a modular form generation library designed to be flexible and adaptable to different schema and UI libraries. The library is structured in layers, each providing specific functionality:
+
+## 1. @autoform/core
+
+This is the foundation of the AutoForm library. It's agnostic to both schema and UI libraries, providing core functionality and types used by other layers.
+
+Key features:
+
+- Defines core types and interfaces
+- Provides utility functions for parsing schemas and validating data
+- Implements a dependency manager for form fields
+
+## 2. Schema Providers (e.g., @autoform/zod)
+
+These packages adapt specific schema libraries to work with AutoForm. They implement the `SchemaProvider` interface defined in @autoform/core.
+
+Key features:
+
+- Parse schema definitions into a format AutoForm can understand
+- Provide validation logic specific to the schema library
+- Handle default values and field configurations
+
+Example with @autoform/zod:
+
+```tsx
+// packages/zod/src/provider.ts
+import { z } from "zod";
+import { SchemaProvider, ParsedSchema } from "@autoform/core";
+import { getDefaultValues } from "./default-values";
+import { parseSchema } from "./schema-parser";
+
+export class ZodProvider<T extends z.ZodObject<any, any>>
+  implements SchemaProvider<z.infer<T>>
+{
+  constructor(private schema: T) {}
+
+  parseSchema(): ParsedSchema {
+    return parseSchema(this.schema);
+  }
+
+  validateSchema(values: z.infer<T>) {
+    try {
+      this.schema.parse(values);
+      return { success: true, data: values } as const;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return { success: false, errors: error.errors } as const;
+      }
+      throw error;
+    }
+  }
+
+  getDefaultValues(): Record<string, any> {
+    return getDefaultValues(this.schema);
+  }
+}
+```
+
+## 3. @autoform/react
+
+This package provides React-specific implementations and hooks for using AutoForm in React applications.
+
+Key features:
+
+- Implements the `AutoForm` component
+- Provides React context for form state management
+- Defines types for React-specific props and components
+
+## 4. UI-specific libraries (e.g., @autoform/mui)
+
+These packages implement UI components for specific design systems or component libraries. They use the core functionality from @autoform/react and provide styled form elements.
+
+Key features:
+
+- Implement UI-specific form components (inputs, selects, etc.)
+- Provide a themed `AutoForm` component
+- Define additional utility functions for the specific UI library
+
+Example with @autoform/mui:
+
+```tsx
+// packages/mui/src/AutoForm.tsx
+import React from "react";
+import {
+  AutoForm as BaseAutoForm,
+  AutoFormUIComponents,
+  AutoFormFieldComponents,
+} from "@autoform/react";
+import { ThemeProvider } from "@mui/material/styles";
+import { AutoFormProps } from "./types";
+import { Form } from "./components/Form";
+import { FieldWrapper } from "./components/FieldWrapper";
+import { ErrorMessage } from "./components/ErrorMessage";
+import { SubmitButton } from "./components/SubmitButton";
+import { StringField } from "./components/StringField";
+import { NumberField } from "./components/NumberField";
+import { BooleanField } from "./components/BooleanField";
+import { DateField } from "./components/DateField";
+import { SelectField } from "./components/SelectField";
+import { ArrayField } from "./components/ArrayField";
+
+const MuiUIComponents: AutoFormUIComponents = {
+  Form,
+  FieldWrapper,
+  ErrorMessage,
+  SubmitButton,
+};
+
+export const MuiAutoFormFieldComponents: AutoFormFieldComponents = {
+  string: StringField,
+  number: NumberField,
+  boolean: BooleanField,
+  date: DateField,
+  select: SelectField,
+  array: ArrayField,
+};
+
+export function AutoForm<T extends Record<string, any>>({
+  theme,
+  ...props
+}: AutoFormProps<T>) {
+  const ThemedForm = () => (
+    <BaseAutoForm
+      {...props}
+      uiComponents={MuiUIComponents}
+      formComponents={MuiAutoFormFieldComponents}
+    />
+  );
+
+  return theme ? (
+    <ThemeProvider theme={theme}>
+      <ThemedForm />
+    </ThemeProvider>
+  ) : (
+    <ThemedForm />
+  );
+}
+```
+
+## How They Interact
+
+1. A user defines their form schema using a supported schema library (e.g., Zod).
+2. The schema is passed to the appropriate schema provider (e.g., @autoform/zod).
+3. The `AutoForm` component from a UI-specific library (e.g., @autoform/mui) is used in the React application.
+4. This `AutoForm` component wraps the core `AutoForm` from @autoform/react, providing UI-specific components.
+5. The core `AutoForm` uses the schema provider to parse the schema, generate form fields, and handle validation.
+6. UI-specific components render the form fields and handle user input.
+7. On form submission, the schema provider validates the data, and the result is passed to the onSubmit handler.
+
+This modular structure allows AutoForm to be flexible and extensible. Users can choose their preferred schema library and UI framework, or even create custom implementations for unsupported libraries.
