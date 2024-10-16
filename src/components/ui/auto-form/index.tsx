@@ -1,7 +1,12 @@
 "use client";
 import { Form } from "@/components/ui/form";
 import React from "react";
-import { DefaultValues, FormState, useForm } from "react-hook-form";
+import {
+  DefaultValues,
+  FormState,
+  useForm,
+  UseFormReturn,
+} from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -9,11 +14,11 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import AutoFormObject from "./fields/object";
-import { Dependency, FieldConfig, SubmitOptions } from "./types";
+import { Dependency, FieldConfig } from "./types";
 import {
-  ZodObjectOrWrapped,
   getDefaultValues,
   getObjectFormSchema,
+  ZodObjectOrWrapped,
 } from "./utils";
 
 export function AutoFormSubmit({
@@ -45,11 +50,17 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 }: {
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
-  onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
+  onValuesChange?: (
+    values: Partial<z.infer<SchemaType>>,
+    form: UseFormReturn<z.infer<SchemaType>>
+  ) => void;
+  onParsedValuesChange?: (
+    values: Partial<z.infer<SchemaType>>,
+    form: UseFormReturn<z.infer<SchemaType>>
+  ) => void;
   onSubmit?: (
     values: z.infer<SchemaType>,
-    options: SubmitOptions<z.infer<SchemaType>>
+    form: UseFormReturn<z.infer<SchemaType>>
   ) => void;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   children?:
@@ -71,18 +82,16 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   function onSubmit(values: z.infer<typeof formSchema>) {
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
-      onSubmitProp?.(parsedValues.data, {
-        setError: form.setError,
-      });
+      onSubmitProp?.(parsedValues.data, form);
     }
   }
 
   React.useEffect(() => {
     const subscription = form.watch((values) => {
-      onValuesChangeProp?.(values);
+      onValuesChangeProp?.(values, form);
       const parsedValues = formSchema.safeParse(values);
       if (parsedValues.success) {
-        onParsedValuesChange?.(parsedValues.data);
+        onParsedValuesChange?.(parsedValues.data, form);
       }
     });
 

@@ -1,8 +1,4 @@
-import {
-  ControllerRenderProps,
-  FieldValues,
-  UseFormSetError,
-} from "react-hook-form";
+import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { INPUT_COMPONENTS } from "./config";
 
@@ -80,8 +76,4 @@ export type AutoFormInputComponentProps = {
   fieldProps: any;
   zodItem: z.ZodAny;
   className?: string;
-};
-
-export type SubmitOptions<SchemaType extends z.infer<z.ZodObject<any, any>>> = {
-  setError: UseFormSetError<SchemaType>;
 };
