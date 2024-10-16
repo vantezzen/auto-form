@@ -1,0 +1,137 @@
+# Getting Started
+
+> New to AutoForm? Check out the [introduction](/docs/intro) first.
+
+import { Steps } from "nextra/components";
+
+<Steps>
+## Install AutoForm's integration to your UI library
+
+AutoForm integrates directly into your UI library to render forms. You can choose from the following official integrations:
+
+- For Material UI: `npm install @autoform/mui`
+- For Mantine: `npm install @autoform/mantine`
+- For shadcn/ui: `npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/autoform/refs/heads/main/packages/shadcn/registry/autoform.json`
+  Use `import { AutoForm } from "@/components/ui/autoform"` to import the component
+- more to come...
+
+If you want to integrate into your own UI components or another UI library, check out the [custom integration guide](/docs/react/custom-integration).
+
+In the docs, we will use Material UI as an example but simply replace the imports with the ones from your UI library.
+
+## Install AutoForm's integration to your schema library
+
+- `npm install @autoform/zod` for Zod
+- more to come...
+
+## Create a form
+
+```tsx
+import { AutoForm } from "@autoform/mui";
+import { ZodProvider } from "@autoform/zod";
+
+const mySchema = z.object({
+  // ...
+});
+const schemaProvider = new ZodProvider(mySchema);
+
+function MyForm() {
+  return (
+    <AutoForm
+      schema={schemaProvider}
+      onSubmit={(data) => {
+        console.log(data);
+      }}
+      withSubmit
+    />
+  );
+}
+```
+
+</Steps>
+
+## Next.js and RSC
+
+AutoForm can only be used inside a client-side React component due to serialization of the schema and values to your event listeners. If you want to use it in a Next.js app, simply mark your component with "use client":
+
+```tsx
+// MyPage.tsx
+export default function MyPage() {
+  return (
+    <div>
+      <MyForm />
+    </div>
+  );
+}
+
+// MyForm.tsx
+"use client";
+import { AutoForm } from "@autoform/mui";
+export default function MyForm() {
+  return <AutoForm ... />;
+}
+```
+
+## Accessing the form data
+
+There are two ways to access the form data:
+
+### onSubmit
+
+The preferred way is to use the `onSubmit` prop. This will be called when the form is submitted and the data is valid.
+
+```tsx
+<AutoForm
+  onSubmit={(data, { setError, clearForm }) => {
+    // Do something with the data
+    // Data is validated and coerced with zod automatically
+    // You can use setError to set errors for the fields
+    // You can run clearForm() to clear the form
+  }}
+/>
+```
+
+### Controlled form
+
+You can also use the `values` and `setValues` props to control the form data yourself.
+
+```tsx
+const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>({});
+
+<AutoForm values={values} setValues={setValues} />;
+```
+
+Please note that the data is not validated or coerced when using this method as they update immediately.
+
+## Submitting the form
+
+You can use the `withSubmit` prop to automatically add a submit button to the form.
+
+```tsx
+<AutoForm
+  // ...
+  withSubmit
+/>
+```
+
+## Adding other elements
+
+All children passed to the `AutoForm` component will be rendered below the form.
+
+```tsx
+<AutoForm>
+  <p className="text-gray-500 text-sm">
+    By submitting this form, you agree to our{" "}
+    <a href="#" className="text-primary underline">
+      terms and conditions
+    </a>
+    .
+  </p>
+</AutoForm>
+```
+
+## Next Steps
+
+- [How to define your zod schema](/docs/schema/zod)
+- [How to customize your form](/docs/react/customization)
+- [How to use AutoForm with other UI libraries](/docs/react/custom-integration)

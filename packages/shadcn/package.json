@@ -1,0 +1,63 @@
+{
+  "name": "@autoform/shadcn",
+  "version": "1.0.2",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "build": "npx tsx src/scripts/build.ts",
+    "dev": "npx tsx watch src/scripts/build.ts"
+  },
+  "exports": {
+    "./globals.css": "./src/globals.css",
+    "./postcss.config": "./postcss.config.mjs",
+    "./tailwind.config": "./tailwind.config.ts",
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./components/*": "./src/components/*.tsx"
+  },
+  "devDependencies": {
+    "@autoform/eslint-config": "*",
+    "@autoform/typescript-config": "*",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "autoprefixer": "^10",
+    "eslint": "^8.57.0",
+    "postcss": "^8",
+    "postcss-load-config": "^6",
+    "tailwindcss": "*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@autoform/core": "*",
+    "@autoform/react": "*",
+    "@autoform/zod": "*",
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-checkbox": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.1",
+    "@radix-ui/react-toggle": "^1.1.0",
+    "@radix-ui/react-toggle-group": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "lucide-react": "*",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-day-picker": "^8.10.1",
+    "react-hook-form": "^7.53.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "tsup": "^8.3.0",
+    "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  }
+}
