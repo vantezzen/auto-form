@@ -1,5 +1,17 @@
 # @autoform/react
 
+## 1.3.0
+
+### Minor Changes
+
+- Improve DX
+
+### Patch Changes
+
+- Updated dependencies
+  - @autoform/core@1.2.0
+  - @autoform/zod@1.2.0
+
 ## 1.2.1
 
 ### Patch Changes

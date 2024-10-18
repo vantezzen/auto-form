@@ -7,7 +7,13 @@ export function validateSchema(schema: YupObjectOrWrapped, values: any) {
     return { success: true, data: values } as const;
   } catch (error) {
     if (error instanceof yup.ValidationError) {
-      return { success: false, errors: error.inner } as const;
+      return {
+        success: false,
+        errors: error.inner.map((error) => ({
+          path: error.path?.split(".") ?? [],
+          message: error.message,
+        })),
+      } as const;
     }
     throw error;
   }

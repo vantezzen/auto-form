@@ -29,7 +29,7 @@
     {
       "path": "autoform/utils.ts",
       "target": "components/ui/autoform/utils.ts",
-      "content": "import { FieldConfig } from \"@autoform/core\";\nimport { SuperRefineFunction } from \"@autoform/zod\";\nimport { fieldConfig as baseFieldConfig } from \"@autoform/react\";\nimport { ReactNode } from \"react\";\nimport { FieldTypes } from \"./AutoForm\";\n\nexport function fieldConfig(\n  config: FieldConfig<ReactNode, FieldTypes>\n): SuperRefineFunction {\n  return baseFieldConfig<FieldTypes>(config);\n}\n",
+      "content": "import { FieldConfig } from \"@autoform/core\";\nimport {\n  SuperRefineFunction,\n  fieldConfig as baseFieldConfig,\n} from \"@autoform/zod\";\nimport { ReactNode } from \"react\";\nimport { FieldTypes } from \"./AutoForm\";\n\nexport function fieldConfig(\n  config: FieldConfig<ReactNode, FieldTypes>\n): SuperRefineFunction {\n  return baseFieldConfig<ReactNode, FieldTypes>(config);\n}\n",
       "type": "registry:ui"
     },
     {

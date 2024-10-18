@@ -168,11 +168,10 @@ const formSchema = z.object({
 
 #### Arrays
 
-AutoForm supports arrays _of objects_. Because inferring things like field labels from arrays of strings/numbers/etc. is difficult, only objects are supported.
+AutoForm supports arrays:
 
 ```tsx
 const formSchema = z.object({
-  guestListName: z.string(),
   invitedGuests: z
     .array(
       // Define the fields for each item
@@ -183,12 +182,13 @@ const formSchema = z.object({
     )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .describe("Guests invited to the party"),
+  hobbies: z.array(z.string()),
 });
 ```
 
 Arrays are not supported as the root element of the form schema.
 
-You also can set default value of an array using .default(), but please makesure the array element has same structure with the schema.
+You also can set default value of an array using .default(), but please make sure the array element has same structure with the schema.
 
 ```tsx
 const formSchema = z.object({

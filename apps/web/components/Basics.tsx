@@ -1,11 +1,11 @@
 import { AutoForm, FieldTypes } from "@autoform/mui";
 import { ZodProvider } from "@autoform/zod";
-import { yupSchemaProvider } from "./utils";
+import { zodSchemaProvider } from "./utils";
 
 function Basics() {
   return (
     <AutoForm
-      schema={yupSchemaProvider}
+      schema={zodSchemaProvider}
       onSubmit={(data) => {
         console.log(JSON.stringify(data, null, 2));
       }}

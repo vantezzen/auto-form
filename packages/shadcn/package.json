@@ -1,6 +1,6 @@
 {
   "name": "@autoform/shadcn",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
@@ -10,6 +10,10 @@
     "lint": "eslint . --max-warnings 0",
     "build": "npx tsx src/scripts/build.ts",
     "dev": "npx tsx watch src/scripts/build.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vantezzen/autoform"
   },
   "exports": {
     "./globals.css": "./src/globals.css",

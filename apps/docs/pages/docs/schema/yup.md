@@ -12,7 +12,13 @@ import { object, string, number, date, InferType, array, mixed } from "yup";
 const yupFormSchema = object({
   name: string().required().label("Your Name").default("John Doe"),
 
-  age: number().required().positive().integer(),
+  age: number()
+    .required(
+      // You can use custom error messages
+      "We need your age to verify you're old enough to use this form"
+    )
+    .positive()
+    .integer(),
 
   email: string()
     .email()
@@ -32,6 +38,7 @@ const yupFormSchema = object({
       name: string().required(),
     })
   ),
+  hobbies: array().of(string()),
 
   // You can use enums
   sport: mixed().oneOf(Object.values(Sports)),
@@ -100,11 +107,10 @@ const formSchema = object({
 
 #### Arrays
 
-AutoForm supports arrays _of objects_. Because inferring things like field labels from arrays of strings/numbers/etc. is difficult, only objects are supported.
+AutoForm supports arrays:
 
 ```tsx
 const formSchema = object({
-  guestListName: string(),
   invitedGuests: array(
     // Define the fields for each item
     object({
@@ -114,6 +120,7 @@ const formSchema = object({
   )
     // Optionally set a custom label - otherwise this will be inferred from the field name
     .label("Guests invited to the party"),
+  hobbies: array(string()),
 });
 ```
 

@@ -8,7 +8,16 @@ import { YupObjectOrWrapped } from "./types";
 export class YupProvider<T extends yup.AnyObjectSchema>
   implements SchemaProvider
 {
-  constructor(private schema: T) {}
+  /**
+   * Provider to use Yup schemas for AutoForm
+   *
+   * @param schema - Yup schema to use for validation
+   */
+  constructor(private schema: T) {
+    if (!schema) {
+      throw new Error("YupProvider: schema is required");
+    }
+  }
 
   parseSchema() {
     return parseSchema(this.schema);

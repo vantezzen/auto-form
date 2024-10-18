@@ -52,9 +52,13 @@ export type SuccessfulSchemaValidation = {
   success: true;
   data: any;
 };
+export type SchemaValidationError = {
+  path: (string | number)[];
+  message: string;
+};
 export type ErrorSchemaValidation = {
   success: false;
-  errors: any[];
+  errors: SchemaValidationError[];
 };
 export type SchemaValidation =
   | SuccessfulSchemaValidation

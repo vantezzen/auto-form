@@ -12,7 +12,9 @@ AutoForm integrates directly into your UI library to render forms. You can choos
 - For Material UI: `npm install @autoform/mui`
 - For Mantine: `npm install @autoform/mantine`
 - For shadcn/ui: `npx shadcn@latest add https://raw.githubusercontent.com/vantezzen/autoform/refs/heads/main/packages/shadcn/registry/autoform.json`
-  Use `import { AutoForm } from "@/components/ui/autoform"` to import the component
+
+  Use `import { AutoForm } from "@/components/ui/autoform"` to import the component. By default, the registry will use the zod integration. If you want to use another schema library, simply update the `/components/ui/autoform/utils.ts` file.
+
 - more to come...
 
 If you want to integrate into your own UI components or another UI library, check out the [custom integration guide](/docs/react/custom-integration).

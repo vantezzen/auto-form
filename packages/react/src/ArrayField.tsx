@@ -13,7 +13,17 @@ export const ArrayField: React.FC<AutoFormFieldProps> = ({ field, path }) => {
   const value = getFieldValue(fieldPathString) || [];
 
   const handleAddItem = () => {
-    const newValue = [...value, {}];
+    const subFieldType = field.schema?.[0]?.type;
+    let defaultValue: any;
+    if (subFieldType === "object") {
+      defaultValue = {};
+    } else if (subFieldType === "array") {
+      defaultValue = [];
+    } else {
+      defaultValue = null;
+    }
+
+    const newValue = [...value, defaultValue];
     setFieldValue(fieldPathString, newValue);
   };
 

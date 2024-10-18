@@ -1,5 +1,12 @@
 import { ParsedField } from "./types";
 
+/**
+ * Get the best label to use for a field.
+ * This will use user-provided labels, descriptions from the schema, or the field key.
+ *
+ * @param field Parsed field
+ * @returns Label for the field
+ */
 export function getLabel(field: ParsedField) {
   return (
     field.fieldConfig?.label || field.description || beautifyLabel(field.key)
@@ -15,5 +22,11 @@ function beautifyLabel(label: string) {
   if (!isNaN(Number(output))) {
     return "";
   }
+
+  // Ignore labels for arrays of non-objects
+  if (output === "*") {
+    return "";
+  }
+
   return output;
 }
