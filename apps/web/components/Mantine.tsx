@@ -1,10 +1,10 @@
 import { AutoForm, fieldConfig } from "@autoform/mantine";
-import { schemaProvider } from "./utils";
+import { zodSchemaProvider } from "./utils";
 
 function Mantine() {
   return (
     <AutoForm
-      schema={schemaProvider}
+      schema={zodSchemaProvider}
       onSubmit={(data) => {
         console.log(JSON.stringify(data, null, 2));
       }}

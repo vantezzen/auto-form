@@ -1,6 +1,8 @@
 import { fieldConfig } from "@autoform/react";
 import { ZodProvider } from "@autoform/zod";
+import { YupProvider } from "@autoform/yup";
 import * as z from "zod";
+import { object, string, number, date, InferType, array, mixed } from "yup";
 
 enum Sports {
   Football = "Football/Soccer",
@@ -10,7 +12,7 @@ enum Sports {
   None = "I don't like sports",
 }
 
-const formSchema = z.object({
+const zodFormSchema = z.object({
   username: z
     .string({
       required_error: "Username is required.",
@@ -93,4 +95,22 @@ const formSchema = z.object({
   }),
 });
 
-export const schemaProvider = new ZodProvider(formSchema);
+export const zodSchemaProvider = new ZodProvider(zodFormSchema);
+
+const yupFormSchema = object({
+  name: string().required().label("Your Name").default("John Doe"),
+  age: number().required().positive().integer(),
+  email: string()
+    .email()
+    .transform((val) => val),
+  website: string().url().nullable(),
+  // createdOn: date().default(() => new Date()),
+  guests: array().of(
+    object({
+      name: string().required(),
+    })
+  ),
+  sport: mixed().oneOf(Object.values(Sports)),
+});
+
+export const yupSchemaProvider = new YupProvider(yupFormSchema);

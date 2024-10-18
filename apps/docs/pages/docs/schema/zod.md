@@ -5,8 +5,8 @@ Basic usage:
 ```tsx
 "use client";
 import * as z from "zod";
-import { ZodProvider } from "@autoform/zod";
-import { AutoForm, fieldConfig } from "@autoform/mui"; // use any UI library
+import { ZodProvider, fieldConfig } from "@autoform/zod";
+import { AutoForm, FieldTypes } from "@autoform/mui"; // use any UI library
 
 // Define your form schema using zod
 const formSchema = z.object({
@@ -33,7 +33,7 @@ const formSchema = z.object({
     // You can add additional config for how to render this field
     // using fieldConfig
     .superRefine(
-      fieldConfig({
+      fieldConfig<React.ReactNode, FieldTypes>({
         description: "We recommend to use a strong password.",
         inputProps: {
           type: "password",
@@ -226,4 +226,18 @@ const formSchema = z.object({
     age: z.coerce.number(),
   }),
 });
+```
+
+#### Field configuration
+
+You can use the `fieldConfig` function to set additional configuration for how a field should be rendered. This function is independent of the UI library you use so you can provide the FieldTypes that are supported by your UI library.
+
+It's recommended that you create your own fieldConfig function that uses the base fieldConfig function from `@autoform/zod` and adds your own customizations:
+
+```tsx
+import { fieldConfig as baseFieldConfig } from "@autoform/zod";
+import { FieldTypes } from "@autoform/mui";
+
+export const fieldConfig = (config: FieldConfig<React.ReactNode, FieldTypes>) =>
+  baseFieldConfig<React.ReactNode, FieldTypes>(config);
 ```

@@ -1,5 +1,14 @@
 # @autoform/react
 
+## 1.2.1
+
+### Patch Changes
+
+- Add yup support
+- Updated dependencies
+  - @autoform/core@1.1.3
+  - @autoform/zod@1.1.3
+
 ## 1.2.0
 
 ### Minor Changes

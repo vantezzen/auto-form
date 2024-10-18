@@ -1,5 +1,11 @@
 # @autoform/core
 
+## 1.1.3
+
+### Patch Changes
+
+- Add yup support
+
 ## 1.1.2
 
 ### Patch Changes
